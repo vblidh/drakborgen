@@ -6,9 +6,8 @@ public class BrickMaker
         return BrickType.values().length;
     }
 
-    public Brick createBrick(int n){
-        Brick brick;
-        switch (BrickType.values()[n]){
+    public Brick createBrick(BrickType type){
+        switch (type){
 	    case UNDISCOVERED:
 	        return createUndiscovered();
 	    case AHEAD:
@@ -23,7 +22,6 @@ public class BrickMaker
 	        return createAheadRight();
 	    case LEFTRIGHT:
 	        return createLeftRight();
-
 	    default:
 	        return createUndiscovered();
 	}
@@ -31,55 +29,55 @@ public class BrickMaker
 
     protected Brick createUndiscovered(){
         SquareType [][] temp = {
-        	{SquareType.BLACK,SquareType.BLACK,SquareType.BLACK},
-		{SquareType.BLACK,SquareType.BLACK,SquareType.BLACK},
-		{SquareType.BLACK,SquareType.BLACK,SquareType.BLACK}};
+        	{SquareType.WALL,SquareType.WALL,SquareType.WALL},
+		{SquareType.WALL,SquareType.WALL,SquareType.WALL},
+		{SquareType.WALL,SquareType.WALL,SquareType.WALL}};
         return new Brick(temp);
     }
     protected Brick createAhead() {
 	SquareType[][] temp = {
-		{ SquareType.BLACK, SquareType.BLACK, SquareType.BLACK },
-		{ SquareType.GREY, SquareType.GREY, SquareType.GREY },
-		{ SquareType.BLACK, SquareType.BLACK, SquareType.BLACK }};
+		{ SquareType.WALL, SquareType.WALL, SquareType.WALL },
+		{ SquareType.PATH, SquareType.PATH, SquareType.PATH },
+		{ SquareType.WALL, SquareType.WALL, SquareType.WALL }};
 	return new Brick(temp);
     }
     protected Brick createLeft() {
 	SquareType[][] temp = {
-		{ SquareType.BLACK, SquareType.GREY, SquareType.BLACK },
-		{ SquareType.GREY, SquareType.GREY, SquareType.BLACK },
-		{ SquareType.BLACK, SquareType.BLACK,SquareType.BLACK } };
+		{ SquareType.WALL, SquareType.PATH, SquareType.WALL },
+		{ SquareType.PATH, SquareType.PATH, SquareType.WALL },
+		{ SquareType.WALL, SquareType.WALL,SquareType.WALL } };
 	return new Brick(temp);
     }
 
     protected Brick createRight(){
         SquareType [][] temp = {
-        	{SquareType.BLACK,SquareType.BLACK,SquareType.BLACK},
-		{SquareType.GREY,SquareType.GREY,SquareType.BLACK},
-    		{SquareType.BLACK,SquareType.GREY,SquareType.BLACK}};
+        	{SquareType.WALL,SquareType.WALL,SquareType.WALL},
+		{SquareType.PATH,SquareType.PATH,SquareType.WALL},
+    		{SquareType.WALL,SquareType.PATH,SquareType.WALL}};
      	return new Brick(temp);
     }
 
     protected Brick createAheadLeft(){
 	SquareType [][] temp = {
-		{SquareType.BLACK,SquareType.GREY,SquareType.BLACK},
-		{SquareType.GREY,SquareType.GREY,SquareType.GREY},
-		{SquareType.BLACK,SquareType.BLACK, SquareType.BLACK}};
+		{SquareType.WALL,SquareType.PATH,SquareType.WALL},
+		{SquareType.PATH,SquareType.PATH,SquareType.PATH},
+		{SquareType.WALL,SquareType.WALL, SquareType.WALL}};
 	return new Brick(temp);
     }
 
     protected Brick createAheadRight(){
 	SquareType [][] temp = {
-		{SquareType.BLACK,SquareType.BLACK,SquareType.BLACK},
-		{SquareType.GREY,SquareType.GREY,SquareType.GREY},
-		{SquareType.BLACK,SquareType.GREY, SquareType.BLACK} };
+		{SquareType.WALL,SquareType.WALL,SquareType.WALL},
+		{SquareType.PATH,SquareType.PATH,SquareType.PATH},
+		{SquareType.WALL,SquareType.PATH, SquareType.WALL} };
 	return new Brick(temp);
     }
 
     protected Brick createLeftRight(){
 	SquareType [][] temp =
-		{{SquareType.BLACK,SquareType.GREY,SquareType.BLACK},
-		{SquareType.GREY,SquareType.GREY,SquareType.BLACK},
-		{SquareType.BLACK,SquareType.GREY, SquareType.BLACK}};
+		{{SquareType.WALL,SquareType.PATH,SquareType.WALL},
+		{SquareType.PATH,SquareType.PATH,SquareType.WALL},
+		{SquareType.WALL,SquareType.PATH, SquareType.WALL}};
 	return new Brick(temp);
     }
 }
