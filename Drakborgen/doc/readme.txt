@@ -1,1 +1,1 @@
-This project will implement a board game called Drakborgen.
+This project will implement a board game called drakborgen.
