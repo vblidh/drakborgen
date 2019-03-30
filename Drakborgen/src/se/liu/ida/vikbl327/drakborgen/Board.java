@@ -106,14 +106,26 @@ public class Board
 	}
     }
 
-    public void placeBrick(int row, int col, BrickType type){
+    public void placeBrick(int row, int col, BrickType type, Direction dir){
         bricks[row][col] = type;
         Brick brick = maker.createBrick(type);
+        switch (dir) {
+	    case DOWN:
+	        brick = brick.rotateRight();
+	        break;
+	    case UP:
+	        brick = brick.rotateLeft();
+	        break;
+	    case LEFT:
+	        brick = brick.rotateLeft();
+	        brick = brick.rotateLeft();
+	        break;
+	}
         int r = row*3;
         int c = col*3;
 	for (int i = r; i < r+3; i++) {
 	    for (int j = c; j < c+3; j++) {
-		squares[i][j] = brick.getSquare(i-row*3,j-col*3);
+		squares[i][j] = brick.getSquare(i-r,j-c);
 	    }
 	}
 	notifyListeners();

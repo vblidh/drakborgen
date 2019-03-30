@@ -19,6 +19,8 @@ public class Character
     private static final int X_POS_FACTOR = 70;
     private static final int Y_POS_FACTOR = 100;
     private static final int SQUARE_WIDTH = 461;
+    private static final int SQUARE_HEIGHT = 601;
+
 
     private final ImageIcon heroIcon = new ImageIcon(ClassLoader.getSystemResource("Sigier.png"));
 
@@ -46,9 +48,7 @@ public class Character
 	return strengthFactor;
     }
 
-    public int getAgilityFactor() {
-	return agilityFactor;
-    }
+    public int getAgilityFactor() { return agilityFactor; }
 
     public int getArmorFactor() {
 	return armorFactor;
@@ -87,7 +87,7 @@ public class Character
     }
 
     public void setyPos(final int yPos) {
-	this.yPos = yPos + Y_POS_FACTOR;
+	this.yPos = yPos*SQUARE_HEIGHT + Y_POS_FACTOR;
     }
 
 }

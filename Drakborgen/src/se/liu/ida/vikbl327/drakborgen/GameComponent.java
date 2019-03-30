@@ -17,8 +17,8 @@ public class GameComponent extends JComponent implements BoardListener
     private static final int BRICK_SIZE = 60;
     private static final int SQUARE_SIZE = 20;
     private static final int TREASURE_ROW = 14;
-    private static final int TEXT_SIZE = 120;
-    private static final int BOARD_WIDTH = 13*3*SQUARE_SIZE;
+    private static final int TEXT_SIZE = 20;
+    private static final int BOARD_WIDTH = 39*SQUARE_SIZE;
     private static final int MENU_SIZE = 60;
     private static final List<Integer> TREASURE_COLS = List.of(Integer.valueOf(18),Integer.valueOf(19), Integer.valueOf(20));
     private static final List<Color> COLORS = List.of(Color.BLACK, Color.WHITE, Color.darkGray, Color.GREEN, Color.ORANGE);
@@ -51,31 +51,33 @@ public class GameComponent extends JComponent implements BoardListener
 	    }
 	}
 
-	for (Character hero : gameBoard.getCharacters()){
+	AffineTransform saveAt = g2d.getTransform();
+	for (Character hero : gameBoard.getCharacters()) {
 	    ImageIcon icon = hero.getHeroIcon();
-	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-	    				 RenderingHints.VALUE_ANTIALIAS_ON);
+
+	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    final AffineTransform at = AffineTransform.getScaleInstance(hero.getScaleX(), hero.getScaleY());
 	    g2d.setTransform(at);
-	    icon.paintIcon(this, g, hero.getxPos(),hero.getyPos());
-
-
-	    g2d.setColor(Color.BLACK);
-
-	    if (currentHero != null) {
-		g2d.setFont(new Font("Monospaced", Font.PLAIN, TEXT_SIZE));
-		g2d.drawString("Hjälte: " + currentHero.getName(), BOARD_WIDTH, TEXT_SIZE);
-
-		g2d.drawString("Styrka (SF):   " + currentHero.getStrengthFactor(), BOARD_WIDTH, 2 * TEXT_SIZE);
-		g2d.drawString("Vighet (VF):   " + currentHero.getAgilityFactor(), BOARD_WIDTH, 3 * TEXT_SIZE);
-		g2d.drawString("Rustning (RF): " + currentHero.getArmorFactor(), BOARD_WIDTH, 4 * TEXT_SIZE);
-		g2d.drawString("Tur (TF):      " + currentHero.getLuckFactor(), BOARD_WIDTH, 5 * TEXT_SIZE);
-		g2d.drawString("Kroppspoäng: " + currentHero.getCurrentHealth() + "/" + currentHero.getHealthPoints(),
-			       BOARD_WIDTH, 6 * TEXT_SIZE);
-	    }
+	    icon.paintIcon(this, g, hero.getxPos(), hero.getyPos());
 	}
 
+
+	g2d.setTransform(saveAt);
+	g2d.setColor(Color.BLACK);
+
+	if (currentHero != null) {
+	    g2d.setFont(new Font("Monospaced", Font.PLAIN, TEXT_SIZE));
+	    g2d.drawString("Hjälte: " + currentHero.getName(), BOARD_WIDTH, TEXT_SIZE);
+
+	    g2d.drawString("Styrka (SF):   " + currentHero.getStrengthFactor(), BOARD_WIDTH, 2 * TEXT_SIZE);
+	    g2d.drawString("Vighet (VF):   " + currentHero.getAgilityFactor(), BOARD_WIDTH, 3 * TEXT_SIZE);
+	    g2d.drawString("Rustning (RF): " + currentHero.getArmorFactor(), BOARD_WIDTH, 4 * TEXT_SIZE);
+	    g2d.drawString("Tur (TF):      " + currentHero.getLuckFactor(), BOARD_WIDTH, 5 * TEXT_SIZE);
+	    g2d.drawString("Kroppspoäng: " + currentHero.getCurrentHealth() + "/" + currentHero.getHealthPoints(),
+			   BOARD_WIDTH, 6 * TEXT_SIZE);
+	}
     }
+
 
     private boolean isInTreasureRoom(int row, int col){
         return (row == TREASURE_ROW && TREASURE_COLS.contains(Integer.valueOf(col)));

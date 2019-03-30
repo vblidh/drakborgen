@@ -1,7 +1,16 @@
 package se.liu.ida.vikbl327.drakborgen;
 
+
 public class BrickMaker
 {
+    private static final SquareType [] FULLPATH = { SquareType.PATH, SquareType.PATH, SquareType.PATH };
+    private static final SquareType [] MIDOPEN = { SquareType.WALL, SquareType.PATH, SquareType.WALL };
+    private static final SquareType [] TWOPATH = { SquareType.PATH, SquareType.PATH, SquareType.WALL };
+    private static final SquareType [] WALL = {SquareType.WALL,SquareType.WALL,SquareType.WALL};
+
+    public BrickMaker() {
+    }
+
     public int numberOfBrickTypes(){
         return BrickType.values().length;
     }
@@ -27,57 +36,36 @@ public class BrickMaker
 	}
     }
 
-    protected Brick createUndiscovered(){
-        SquareType [][] temp = {
-        	{SquareType.WALL,SquareType.WALL,SquareType.WALL},
-		{SquareType.WALL,SquareType.WALL,SquareType.WALL},
-		{SquareType.WALL,SquareType.WALL,SquareType.WALL}};
+    private Brick createUndiscovered(){
+        SquareType [][] temp = { WALL, WALL, WALL };
         return new Brick(temp);
     }
-    protected Brick createAhead() {
-	SquareType[][] temp = {
-		{ SquareType.WALL, SquareType.WALL, SquareType.WALL },
-		{ SquareType.PATH, SquareType.PATH, SquareType.PATH },
-		{ SquareType.WALL, SquareType.WALL, SquareType.WALL }};
+    private Brick createAhead() {
+	SquareType[][] temp = {	WALL, FULLPATH, WALL };
 	return new Brick(temp);
     }
-    protected Brick createLeft() {
-	SquareType[][] temp = {
-		{ SquareType.WALL, SquareType.PATH, SquareType.WALL },
-		{ SquareType.PATH, SquareType.PATH, SquareType.WALL },
-		{ SquareType.WALL, SquareType.WALL,SquareType.WALL } };
+    private Brick createLeft() {
+	SquareType[][] temp = { MIDOPEN, TWOPATH, WALL };
 	return new Brick(temp);
     }
 
-    protected Brick createRight(){
-        SquareType [][] temp = {
-        	{SquareType.WALL,SquareType.WALL,SquareType.WALL},
-		{SquareType.PATH,SquareType.PATH,SquareType.WALL},
-    		{SquareType.WALL,SquareType.PATH,SquareType.WALL}};
+    private Brick createRight(){
+        SquareType [][] temp = { WALL, TWOPATH, MIDOPEN };
      	return new Brick(temp);
     }
 
-    protected Brick createAheadLeft(){
-	SquareType [][] temp = {
-		{SquareType.WALL,SquareType.PATH,SquareType.WALL},
-		{SquareType.PATH,SquareType.PATH,SquareType.PATH},
-		{SquareType.WALL,SquareType.WALL, SquareType.WALL}};
+    private Brick createAheadLeft(){
+	SquareType [][] temp = {MIDOPEN, FULLPATH, WALL	};
 	return new Brick(temp);
     }
 
-    protected Brick createAheadRight(){
-	SquareType [][] temp = {
-		{SquareType.WALL,SquareType.WALL,SquareType.WALL},
-		{SquareType.PATH,SquareType.PATH,SquareType.PATH},
-		{SquareType.WALL,SquareType.PATH, SquareType.WALL} };
+    private Brick createAheadRight(){
+	SquareType [][] temp = {WALL, FULLPATH, MIDOPEN	};
 	return new Brick(temp);
     }
 
-    protected Brick createLeftRight(){
-	SquareType [][] temp =
-		{{SquareType.WALL,SquareType.PATH,SquareType.WALL},
-		{SquareType.PATH,SquareType.PATH,SquareType.WALL},
-		{SquareType.WALL,SquareType.PATH, SquareType.WALL}};
+    private Brick createLeftRight(){
+	SquareType [][] temp = { MIDOPEN, TWOPATH, MIDOPEN };
 	return new Brick(temp);
     }
 }
