@@ -5,8 +5,7 @@ import java.util.List;
 
 public class Board
 {
-    private BrickType [][] bricks;
-    private SquareType [][] squares;
+    private Brick[][] bricks;
     private List<BoardListener> listeners;
     private List<Character> characters;
 
@@ -20,13 +19,9 @@ public class Board
 	this.maker = new BrickMaker();
 	this.listeners = new ArrayList<>();
 	this.characters = new ArrayList<>();
-	this.bricks = new BrickType[height][width];
-	this.squares = new SquareType[height*3][width*3];
+	this.bricks = new Brick[height][width];
 
 	clearBoard();
-	clearSquares();
-	setStartSquares();
-	setTreasureSquares();
 
     }
 
@@ -43,10 +38,11 @@ public class Board
     }
 
     public SquareType getSquare(int row, int col){
-        return squares[row][col];
+        int r = row/6;
+        int c = col/6;
+        return bricks[r][c].getSquare(row % 6, col % 6);
     }
 
-    public BrickType getBrick(int row, int col) {return bricks[row][col]; }
 
     public void notifyListeners(){
 	for (BoardListener listener : listeners) {
@@ -68,46 +64,23 @@ public class Board
     public void clearBoard(){
 	for (int row = 0; row < height; row++) {
 	    for (int col = 0; col < width; col++) {
-		this.bricks[row][col] = BrickType.UNDISCOVERED;
+		this.bricks[row][col] = maker.createBrick(BrickType.UNDISCOVERED);
 	    }
 	}
-	bricks[0][0] = BrickType.START;
-	bricks[0][width-1] = BrickType.START;
-	bricks[height-1][0] = BrickType.START;
-	bricks[height-1][width-1] = BrickType.START;
-	bricks[height/2][width/2-1] = BrickType.TREASURE;
-	bricks[height/2][width/2] = BrickType.TREASURE;
+	bricks[0][0] = maker.createBrick(BrickType.START);
+	bricks[0][width-1] = maker.createBrick(BrickType.START);
+	bricks[height-1][0] = maker.createBrick(BrickType.START);
+	bricks[height-1][width-1] = maker.createBrick(BrickType.START);
+	bricks[height/2][width/2-1] = maker.createBrick(BrickType.TREASURE);
+	bricks[height/2-1][width/2-1] = maker.createBrick(BrickType.TREASURE);
     }
 
-    public void clearSquares(){
-	for (int i = 0; i < height*3 ; i++) {
-	    for (int j = 0; j < width*3; j++) {
-		squares[i][j] = SquareType.UNDISCOVERD;
-	    }
-	}
-    }
 
-    public void setStartSquares(){
-	for (int i = 0; i < 3; i++) {
-	    for (int j = 0; j < 3; j++) {
-		squares[i][j] = SquareType.START;
-		squares[height*3-1-i][j] = SquareType.START;
-		squares[i][width*3-1-j] = SquareType.START;
-		squares[height*3-1-i][width*3-1-j] = SquareType.START;
-	    }
-	}
-    }
 
-    public void setTreasureSquares(){
-	for (int i = 12; i < 18; i++) {
-	    for (int j = 18; j < 21; j++) {
-		squares[i][j] = SquareType.TREASURE;
-	    }
-	}
-    }
+
+
 
     public void placeBrick(int row, int col, BrickType type, Direction dir){
-        bricks[row][col] = type;
         Brick brick = maker.createBrick(type);
         switch (dir) {
 	    case DOWN:
@@ -121,13 +94,8 @@ public class Board
 	        brick = brick.rotateLeft();
 	        break;
 	}
-        int r = row*3;
-        int c = col*3;
-	for (int i = r; i < r+3; i++) {
-	    for (int j = c; j < c+3; j++) {
-		squares[i][j] = brick.getSquare(i-r,j-c);
-	    }
-	}
+	bricks[row][col] = brick;
+
 	notifyListeners();
     }
 }

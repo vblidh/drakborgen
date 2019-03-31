@@ -1,5 +1,6 @@
 package se.liu.ida.vikbl327.drakborgen;
 
+import org.apache.commons.lang3.ArrayUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -15,13 +16,13 @@ public class GameComponent extends JComponent implements BoardListener
 
     private static final int WINDOW_WIDTH = 1500;
     private static final int BRICK_SIZE = 60;
-    private static final int SQUARE_SIZE = 20;
-    private static final int TREASURE_ROW = 14;
-    private static final int TEXT_SIZE = 20;
-    private static final int BOARD_WIDTH = 39*SQUARE_SIZE;
+    private static final int SQUARE_SIZE = 10;
+    private static final int TREASURE_ROW = 29;
+    private static final int TEXT_SIZE = 18;
+    private static final int BOARD_WIDTH = 13*6*SQUARE_SIZE;
     private static final int MENU_SIZE = 60;
-    private static final List<Integer> TREASURE_COLS = List.of(Integer.valueOf(18),Integer.valueOf(19), Integer.valueOf(20));
-    private static final List<Color> COLORS = List.of(Color.BLACK, Color.WHITE, Color.darkGray, Color.GREEN, Color.ORANGE);
+    private static final int [] TREASURE_COLS = {30,31,32,33,34,35};
+    private static final List<Color> COLORS = List.of(Color.BLACK, Color.lightGray, Color.darkGray, Color.GREEN, Color.ORANGE);
 
     public GameComponent(final Board gameBoard) {
 	this.gameBoard = gameBoard;
@@ -42,12 +43,12 @@ public class GameComponent extends JComponent implements BoardListener
         super.paintComponent(g);
         final Graphics2D g2d = (Graphics2D) g;
 
-	for (int row = 0; row < gameBoard.getHeight()*3; row++) {
-	    for (int col = 0; col < gameBoard.getWidth()*3; col++) {
+	for (int row = 0; row < gameBoard.getHeight()*6; row++) {
+	    for (int col = 0; col < gameBoard.getWidth()*6; col++) {
 		g2d.setColor(squareColors.get(gameBoard.getSquare(row,col)));
 		g2d.fillRect(col*SQUARE_SIZE, row*SQUARE_SIZE,
-			     SQUARE_SIZE-((col+1) % 3 == 0 ? 1 : 0),
-			     SQUARE_SIZE-((row+1) % 3 == 0 && !isInTreasureRoom(row,col) ? 1 : 0));
+			     SQUARE_SIZE-((col+1) % 6 == 0 ? 1 : 0),
+			     SQUARE_SIZE-((row+1) % 6 == 0 && !isInTreasureRoom(row,col) ? 1 : 0));
 	    }
 	}
 
@@ -80,7 +81,7 @@ public class GameComponent extends JComponent implements BoardListener
 
 
     private boolean isInTreasureRoom(int row, int col){
-        return (row == TREASURE_ROW && TREASURE_COLS.contains(Integer.valueOf(col)));
+        return (row == TREASURE_ROW && ArrayUtils.contains(TREASURE_COLS, col));
     }
 
 

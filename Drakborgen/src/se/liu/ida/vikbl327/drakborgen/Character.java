@@ -18,8 +18,8 @@ public class Character
     private static final double SCALE_Y = 0.1;
     private static final int X_POS_FACTOR = 70;
     private static final int Y_POS_FACTOR = 100;
-    private static final int SQUARE_WIDTH = 461;
-    private static final int SQUARE_HEIGHT = 601;
+    private static final int SQUARE_WIDTH = 600;
+    private static final int SQUARE_HEIGHT = 800;
 
 
     private final ImageIcon heroIcon = new ImageIcon(ClassLoader.getSystemResource("Sigier.png"));

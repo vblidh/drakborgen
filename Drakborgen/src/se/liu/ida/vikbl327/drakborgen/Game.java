@@ -26,5 +26,7 @@ public class Game
 	hero.setxPos(1);
 	sleep(500);
 	board.placeBrick(2,1,BrickType.AHEAD, Direction.DOWN);
+	hero.setxPos(0);
+	hero.setyPos(0);
     }
 }
