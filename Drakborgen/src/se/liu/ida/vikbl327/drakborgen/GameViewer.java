@@ -10,6 +10,7 @@ public class GameViewer
     private Board gameBoard;
     private final JFrame frame;
     private GameComponent comp;
+    private final BrickGenerator generator;
 
     public GameViewer(final Board gameBoard) {
 	this.gameBoard = gameBoard;
@@ -26,10 +27,16 @@ public class GameViewer
 	frame.pack();
 	frame.setVisible(true);
 	frame.setJMenuBar(menuBar);
+
+	this.generator = new BrickGenerator();
     }
 
     public GameComponent getComp() {
 	return comp;
+    }
+
+    public BrickType drawBrick(){
+        return generator.generateBrick();
     }
 
     private class QuitAction extends AbstractAction

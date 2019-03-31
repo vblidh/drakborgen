@@ -3,6 +3,10 @@ package se.liu.ida.vikbl327.drakborgen;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class stores the representation of the board. Contains information on what bricks are on the board, and where heroes are
+ * standing. Contains methods for placing new bricks on the board and for retrieving the SquareType of any given square.
+ */
 public class Board
 {
     private Brick[][] bricks;
@@ -25,6 +29,7 @@ public class Board
 
     }
 
+
     public int getHeight() {
 	return height;
     }
@@ -44,7 +49,7 @@ public class Board
     }
 
 
-    public void notifyListeners(){
+    private void notifyListeners(){
 	for (BoardListener listener : listeners) {
 	    listener.boardChanged();
 	}
@@ -56,8 +61,6 @@ public class Board
 
     public void addCharacter(Character hero){
         characters.add(hero);
-        hero.setxPos(0);
-        hero.setyPos(0);
         notifyListeners();
     }
 
@@ -67,12 +70,15 @@ public class Board
 		this.bricks[row][col] = maker.createBrick(BrickType.UNDISCOVERED);
 	    }
 	}
+
 	bricks[0][0] = maker.createBrick(BrickType.START);
 	bricks[0][width-1] = maker.createBrick(BrickType.START);
 	bricks[height-1][0] = maker.createBrick(BrickType.START);
 	bricks[height-1][width-1] = maker.createBrick(BrickType.START);
 	bricks[height/2][width/2-1] = maker.createBrick(BrickType.TREASURE);
 	bricks[height/2-1][width/2-1] = maker.createBrick(BrickType.TREASURE);
+
+	notifyListeners();
     }
 
 
@@ -94,8 +100,8 @@ public class Board
 	        brick = brick.rotateLeft();
 	        break;
 	}
-	bricks[row][col] = brick;
 
+	bricks[row][col] = brick;
 	notifyListeners();
     }
 }

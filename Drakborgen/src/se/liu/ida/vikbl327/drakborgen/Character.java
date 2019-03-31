@@ -2,92 +2,38 @@ package se.liu.ida.vikbl327.drakborgen;
 
 import javax.swing.*;
 
-public class Character
+/**
+ * Interface for all the different heroes that can be chosen to play as at the start of a game.
+ */
+
+public interface Character
 {
-    private String name;
-    private int healthPoints;
-    private int strengthFactor;
-    private int agilityFactor;
-    private int armorFactor;
-    private int luckFactor;
-    private int currentHealth;
 
-    private int xPos;
-    private int yPos;
-    private static final double SCALE_X = 0.13;
-    private static final double SCALE_Y = 0.1;
-    private static final int X_POS_FACTOR = 70;
-    private static final int Y_POS_FACTOR = 100;
-    private static final int SQUARE_WIDTH = 600;
-    private static final int SQUARE_HEIGHT = 800;
+    public String getName();
 
+    public int getHealthPoints();
 
-    private final ImageIcon heroIcon = new ImageIcon(ClassLoader.getSystemResource("Sigier.png"));
+    public int getStrengthFactor();
 
-    public Character(final String name, final int healthPoints, final int strengthFactor, final int agilityFactor, final int armorFactor,
-		     final int luckFactor)
-    {
-	this.name = name;
-	this.healthPoints = healthPoints;
-	this.strengthFactor = strengthFactor;
-	this.agilityFactor = agilityFactor;
-	this.armorFactor = armorFactor;
-	this.luckFactor = luckFactor;
-	this.currentHealth = healthPoints;
-    }
+    public int getAgilityFactor();
 
-    public String getName() {
-	return name;
-    }
+    public int getArmorFactor();
 
-    public int getHealthPoints() {
-	return healthPoints;
-    }
+    public int getLuckFactor();
 
-    public int getStrengthFactor() {
-	return strengthFactor;
-    }
+    public int getCurrentHealth();
 
-    public int getAgilityFactor() { return agilityFactor; }
+    public int getxPos();
 
-    public int getArmorFactor() {
-	return armorFactor;
-    }
+    public int getyPos();
 
-    public int getLuckFactor() {
-	return luckFactor;
-    }
+    public ImageIcon getHeroIcon();
 
-    public int getCurrentHealth() {
-	return currentHealth;
-    }
+    public double getScaleX();
 
-    public int getxPos() {
-	return xPos;
-    }
+    public double getScaleY();
 
-    public int getyPos() {
-	return yPos;
-    }
+    public void setxPos(final int xPos);
 
-    public ImageIcon getHeroIcon() {
-	return heroIcon;
-    }
-
-    public double getScaleX() {
-	return SCALE_X;
-    }
-
-    public double getScaleY() {
-	return SCALE_Y;
-    }
-
-    public void setxPos(final int xPos) {
-	this.xPos = xPos*SQUARE_WIDTH + X_POS_FACTOR;
-    }
-
-    public void setyPos(final int yPos) {
-	this.yPos = yPos*SQUARE_HEIGHT + Y_POS_FACTOR;
-    }
-
+    public void setyPos(final int yPos);
 }

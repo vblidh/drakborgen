@@ -7,6 +7,9 @@ import java.awt.geom.AffineTransform;
 import java.util.EnumMap;
 import java.util.List;
 
+/**
+ * Paints out the game on a Jframe.
+ */
 
 public class GameComponent extends JComponent implements BoardListener
 {
@@ -81,13 +84,10 @@ public class GameComponent extends JComponent implements BoardListener
 
 
     private boolean isInTreasureRoom(int row, int col){
-        return (row == TREASURE_ROW && ArrayUtils.contains(TREASURE_COLS, col));
+	return (row == TREASURE_ROW && ArrayUtils.contains(TREASURE_COLS, col));
     }
 
 
-    public Dimension getPreferredSize(){
-        return new Dimension(WINDOW_WIDTH, gameBoard.getHeight() * BRICK_SIZE+MENU_SIZE);
-    }
 
     public EnumMap<SquareType, Color> generateDefaultColors(){
             EnumMap<SquareType, Color> map = new EnumMap<>(SquareType.class);
@@ -98,4 +98,8 @@ public class GameComponent extends JComponent implements BoardListener
     	}
     	return map;
         }
+
+    public Dimension getPreferredSize(){
+        return new Dimension(WINDOW_WIDTH, gameBoard.getHeight() * BRICK_SIZE+MENU_SIZE);
+    }
 }

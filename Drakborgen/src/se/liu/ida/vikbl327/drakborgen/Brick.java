@@ -10,6 +10,10 @@ public class Brick
 	this.type = type;
     }
 
+    public BrickType getType() {
+	return type;
+    }
+
     public SquareType getSquare(int row, int col) {
 	return squares[row][col];
     }

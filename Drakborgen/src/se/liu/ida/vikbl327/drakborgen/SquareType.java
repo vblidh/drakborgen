@@ -2,5 +2,5 @@ package se.liu.ida.vikbl327.drakborgen;
 
 public enum SquareType
 {
-    UNDISCOVERD, PATH, WALL, START, TREASURE
+    UNDISCOVERED, PATH, WALL, START, TREASURE
 }

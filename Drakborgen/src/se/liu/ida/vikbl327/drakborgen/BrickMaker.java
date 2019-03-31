@@ -1,5 +1,8 @@
 package se.liu.ida.vikbl327.drakborgen;
 
+/**
+ *
+ */
 
 public class BrickMaker
 {
@@ -11,8 +14,8 @@ public class BrickMaker
 	    SquareType.PATH, SquareType.PATH, SquareType.WALL };
     private static final SquareType [] WALL = {SquareType.WALL,SquareType.WALL,SquareType.WALL,
 	    SquareType.WALL,SquareType.WALL,SquareType.WALL};
-    private static final SquareType [] UNDISCOVERED = {SquareType.UNDISCOVERD,SquareType.UNDISCOVERD,SquareType.UNDISCOVERD,
-	    SquareType.UNDISCOVERD,SquareType.UNDISCOVERD,SquareType.UNDISCOVERD};
+    private static final SquareType [] UNDISCOVERED = {SquareType.UNDISCOVERED,SquareType.UNDISCOVERED,SquareType.UNDISCOVERED,
+	    SquareType.UNDISCOVERED,SquareType.UNDISCOVERED,SquareType.UNDISCOVERED };
     private static final SquareType [] ROOM = {SquareType.WALL, SquareType.PATH,SquareType.PATH,
 	    SquareType.PATH,SquareType.PATH, SquareType.WALL};
     private static final SquareType [] START = {SquareType.START,SquareType.START, SquareType.START,
