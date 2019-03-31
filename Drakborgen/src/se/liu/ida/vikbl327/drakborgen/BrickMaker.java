@@ -84,7 +84,7 @@ public class BrickMaker
     }
 
     private Brick createLeftRight(){
-	SquareType [][] temp = { MIDOPEN, ROOM, ROOM, ROOM, ROOM, MIDOPEN };
+	SquareType [][] temp = { MIDOPEN, ROOM, TWOPATH, TWOPATH, ROOM, MIDOPEN };
 	return new Brick(temp, BrickType.LEFTRIGHT);
     }
 
