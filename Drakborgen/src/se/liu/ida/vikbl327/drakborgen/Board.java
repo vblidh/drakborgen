@@ -79,8 +79,8 @@ public class Board
 	bricks[0][width-1] = maker.createBrick(BrickType.START);
 	bricks[height-1][0] = maker.createBrick(BrickType.START);
 	bricks[height-1][width-1] = maker.createBrick(BrickType.START);
-	bricks[height/2][width/2] = maker.createBrick(BrickType.TREASURE);
-	bricks[height/2-1][width/2] = maker.createBrick(BrickType.TREASURE);
+	bricks[height/2][width/2] = maker.createBrick(BrickType.TREASUREBOT);
+	bricks[height/2-1][width/2] = maker.createBrick(BrickType.TREASURETOP);
 
 	notifyListeners();
     }

@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
 public class GameViewer
 {
 
+    private static final int BRICK_SIZE = 60;
+
     private Board gameBoard;
     private final JFrame frame;
     private GameComponent comp;
@@ -33,21 +35,28 @@ public class GameViewer
 	    @Override public void mousePressed(final MouseEvent e) {
 		super.mousePressed(e);
 		if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
-		    int row = e.getY()/60;
-		    int col = e.getX()/60;
-		    try {
-		    	BrickType type = drawBrick();
-		    	Direction dir = decideDirection(row,col);
-		    	if (dir == Direction.INVALID) eventlog.setText("Du kan bara flytta till en intilliggande ruta med öppning!");
-		    	else {
-		    	    gameBoard.placeBrick(row,col,type, dir);
-		    	    currentHero.setyPos(row);
-		    	    currentHero.setxPos(col);
-
-		    	}
-		}
-		    catch (BadLocationException ex) {
-			System.out.println(ex.getMessage());
+		    int row = e.getY()/BRICK_SIZE;
+		    int col = e.getX()/BRICK_SIZE;
+		    if (row >= gameBoard.getHeight() || col >= gameBoard.getWidth())
+		        eventlog.setText("Du kan inte flytta hjälten utanför brädet \n");
+		    else if (decideDirection(row,col) == Direction.INVALID)
+		        eventlog.setText("Du kan bara flytta till en intilliggande ruta med öppning! \n");
+		    else if (gameBoard.getBrick(row,col).getType() == BrickType.UNDISCOVERED){
+			try {
+			    BrickType type = drawBrick();
+			    gameBoard.placeBrick(row, col, type, decideDirection(row,col));
+			    currentHero.setyPos(row);
+			    currentHero.setxPos(col);
+		    }
+			catch (BadLocationException ex) {
+			    System.out.println(ex.getMessage());
+			}
+		    }
+		    else {
+		        currentHero.setyPos(row);
+		        currentHero.setxPos(col);
+		        comp.boardChanged();
+		        eventlog.setText("Flyttade till redan befintlig bricka \n");
 		    }
 		}
 	    }
@@ -65,7 +74,6 @@ public class GameViewer
 
 	eventlog.setFont(new Font("Helvetica",Font.PLAIN, 18));
 	eventlog.setForeground(Color.GREEN);
-	eventlog.setBounds(1100,350,400,400);
 	eventlog.setBackground(Color.BLACK);
 	eventlog.setEditable(false);
 	eventlog.setRows(5);
@@ -92,11 +100,11 @@ public class GameViewer
 
 
 	frame.setLayout(new GridLayout());
-	frame.add(comp, BorderLayout.CENTER);
+	frame.add(comp, BorderLayout.WEST);
 	frame.add(panel, BorderLayout.EAST);
+	frame.setJMenuBar(menuBar);
 	frame.pack();
 	frame.setVisible(true);
-	frame.setJMenuBar(menuBar);
 
 
     }
@@ -132,14 +140,16 @@ public class GameViewer
     }
 
     public Direction decideDirection(int row, int col){
-        Brick brick = gameBoard.getBrick(row,col);
-        if (currentHero.getxPos() == col-1 && currentHero.getyPos() == row && brick.getSquare(3,5) == SquareType.PATH)
+        int heroyPos = currentHero.getyPos();
+        int heroxPos = currentHero.getxPos();
+        Brick brick = gameBoard.getBrick(heroyPos,heroxPos);
+        if (heroxPos == col-1 && heroyPos == row && brick.getSquare(3,5) == SquareType.PATH)
             return Direction.RIGHT;
-        else if (currentHero.getxPos() == col+1 && currentHero.getyPos() == row && brick.getSquare(3,0) == SquareType.PATH)
+        else if (heroxPos == col+1 && heroyPos == row && brick.getSquare(3,0) == SquareType.PATH)
             return Direction.LEFT;
-        else if (currentHero.getxPos() == col && currentHero.getyPos() == row-1 && brick.getSquare(5,3) == SquareType.PATH)
+        else if (heroxPos == col && heroyPos == row-1 && brick.getSquare(5,3) == SquareType.PATH)
             return Direction.DOWN;
-        else if (currentHero.getxPos() == col && currentHero.getyPos() == row+1 && brick.getSquare(0,3) == SquareType.PATH)
+        else if (heroxPos == col && heroyPos == row+1 && brick.getSquare(0,3) == SquareType.PATH)
             return Direction.UP;
         else return Direction.INVALID;
     }

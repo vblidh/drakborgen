@@ -45,7 +45,7 @@ public class GameComponent extends JComponent implements BoardListener
 	    for (int col = 0; col < gameBoard.getWidth()*6; col++) {
 		g2d.setColor(squareColors.get(gameBoard.getSquare(row,col)));
 		g2d.fillRect(col*SQUARE_SIZE, row*SQUARE_SIZE,
-			     SQUARE_SIZE-((col+1) % 6 == 0 ? 1 : 0),
+			     SQUARE_SIZE-(((col+1) % 6 == 0 && (col+1) != gameBoard.getWidth()*6) ? 1 : 0),
 			     SQUARE_SIZE-((row+1) % 6 == 0 && !isInTreasureRoom(row,col) ? 1 : 0));
 	    }
 	}

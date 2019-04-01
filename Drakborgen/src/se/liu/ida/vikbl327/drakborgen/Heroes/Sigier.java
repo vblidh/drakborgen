@@ -35,7 +35,7 @@ public class Sigier implements Character
     {
 	this.currentHealth = HEALTH_POINTS;
 	this.xPos = 0;
-	this.yPos = 0;
+	this.yPos = 9;
 
 	this.heroIcon = new ImageIcon(ClassLoader.getSystemResource("Sigier.png"));
     }
