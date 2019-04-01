@@ -42,6 +42,10 @@ public class Board
 	return characters;
     }
 
+    public Brick getBrick(int row, int col) {
+	return bricks[row][col];
+    }
+
     public SquareType getSquare(int row, int col){
         int r = row/6;
         int c = col/6;
@@ -75,8 +79,8 @@ public class Board
 	bricks[0][width-1] = maker.createBrick(BrickType.START);
 	bricks[height-1][0] = maker.createBrick(BrickType.START);
 	bricks[height-1][width-1] = maker.createBrick(BrickType.START);
-	bricks[height/2][width/2-1] = maker.createBrick(BrickType.TREASURE);
-	bricks[height/2-1][width/2-1] = maker.createBrick(BrickType.TREASURE);
+	bricks[height/2][width/2] = maker.createBrick(BrickType.TREASURE);
+	bricks[height/2-1][width/2] = maker.createBrick(BrickType.TREASURE);
 
 	notifyListeners();
     }

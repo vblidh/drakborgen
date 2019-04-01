@@ -2,7 +2,6 @@ package se.liu.ida.vikbl327.drakborgen;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class BrickGenerator
@@ -29,6 +28,7 @@ public class BrickGenerator
     }
 
     public BrickType generateBrick(){
+        if (bricks.isEmpty()) initializeBrickList();
         int r = rnd.nextInt(bricks.size());
         BrickType type = bricks.remove(r);
         return type;

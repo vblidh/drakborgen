@@ -21,8 +21,8 @@ public class Sigier implements Character
     private static final double SCALE_Y = 0.1;
     private static final int X_POS_FACTOR = 70;
     private static final int Y_POS_FACTOR = 100;
-    private static final int SQUARE_WIDTH = 600;
-    private static final int SQUARE_HEIGHT = 800;
+    private static final int X_POS_MULTIPLIER = 600;
+    private static final int Y_POS_MULTIPLIER = 800;
 
 
     private int currentHealth;
@@ -84,12 +84,20 @@ public class Sigier implements Character
 	return SCALE_Y;
     }
 
+    public int getCalculatedxPos(){
+        return xPos*X_POS_MULTIPLIER + X_POS_FACTOR;
+    }
+
+    public int getCalculatedyPos() {
+        return yPos*Y_POS_MULTIPLIER + Y_POS_FACTOR;
+    }
+
     public void setxPos(final int xPos) {
-	this.xPos = xPos*SQUARE_WIDTH + X_POS_FACTOR;
+	this.xPos = xPos;
     }
 
     public void setyPos(final int yPos) {
-	this.yPos = yPos*SQUARE_HEIGHT + Y_POS_FACTOR;
+	this.yPos = yPos;
     }
 
 }

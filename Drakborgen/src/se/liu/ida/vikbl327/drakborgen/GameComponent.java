@@ -15,27 +15,22 @@ public class GameComponent extends JComponent implements BoardListener
 {
     private Board gameBoard;
     private EnumMap<SquareType, Color> squareColors;
-    private Character currentHero;
 
-    private static final int WINDOW_WIDTH = 1500;
     private static final int BRICK_SIZE = 60;
     private static final int SQUARE_SIZE = 10;
     private static final int TREASURE_ROW = 29;
     private static final int TEXT_SIZE = 18;
     private static final int BOARD_WIDTH = 13*6*SQUARE_SIZE;
     private static final int MENU_SIZE = 60;
-    private static final int [] TREASURE_COLS = {30,31,32,33,34,35};
+    private static final int [] TREASURE_COLS = {36,37,38,39,40,41};
     private static final List<Color> COLORS = List.of(Color.BLACK, Color.lightGray, Color.darkGray, Color.GREEN, Color.ORANGE);
 
     public GameComponent(final Board gameBoard) {
 	this.gameBoard = gameBoard;
 	this.squareColors = generateDefaultColors();
-	this.currentHero = null;
+
     }
 
-    public void setCurrentHero(final Character currentHero) {
-	this.currentHero = currentHero;
-    }
 
     @Override public void boardChanged() {
 	this.repaint();
@@ -62,13 +57,13 @@ public class GameComponent extends JComponent implements BoardListener
 	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    final AffineTransform at = AffineTransform.getScaleInstance(hero.getScaleX(), hero.getScaleY());
 	    g2d.setTransform(at);
-	    icon.paintIcon(this, g, hero.getxPos(), hero.getyPos());
+	    icon.paintIcon(this, g, hero.getCalculatedxPos(),hero.getCalculatedyPos());
 	}
 
 
 	g2d.setTransform(saveAt);
 	g2d.setColor(Color.BLACK);
-
+	/*
 	if (currentHero != null) {
 	    g2d.setFont(new Font("Monospaced", Font.PLAIN, TEXT_SIZE));
 	    g2d.drawString("Hjälte: " + currentHero.getName(), BOARD_WIDTH, TEXT_SIZE);
@@ -79,7 +74,7 @@ public class GameComponent extends JComponent implements BoardListener
 	    g2d.drawString("Tur (TF):      " + currentHero.getLuckFactor(), BOARD_WIDTH, 5 * TEXT_SIZE);
 	    g2d.drawString("Kroppspoäng: " + currentHero.getCurrentHealth() + "/" + currentHero.getHealthPoints(),
 			   BOARD_WIDTH, 6 * TEXT_SIZE);
-	}
+	}*/
     }
 
 
@@ -100,6 +95,6 @@ public class GameComponent extends JComponent implements BoardListener
         }
 
     public Dimension getPreferredSize(){
-        return new Dimension(WINDOW_WIDTH, gameBoard.getHeight() * BRICK_SIZE+MENU_SIZE);
+        return new Dimension(gameBoard.getWidth()*BRICK_SIZE, gameBoard.getHeight() * BRICK_SIZE+MENU_SIZE);
     }
 }

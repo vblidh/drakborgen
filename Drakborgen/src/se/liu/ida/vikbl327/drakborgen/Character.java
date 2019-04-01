@@ -8,7 +8,6 @@ import javax.swing.*;
 
 public interface Character
 {
-
     public String getName();
 
     public int getHealthPoints();
@@ -33,7 +32,12 @@ public interface Character
 
     public double getScaleY();
 
+    public int getCalculatedxPos();
+
+    public int getCalculatedyPos();
+
     public void setxPos(final int xPos);
 
     public void setyPos(final int yPos);
+
 }

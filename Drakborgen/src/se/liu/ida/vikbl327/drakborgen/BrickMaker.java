@@ -20,6 +20,8 @@ public class BrickMaker
 	    SquareType.PATH,SquareType.PATH, SquareType.WALL};
     private static final SquareType [] START = {SquareType.START,SquareType.START, SquareType.START,
 	    SquareType.START,SquareType.START,SquareType.START};
+    private static final SquareType [] STARTOPENLEFT = {SquareType.START,SquareType.START, SquareType.START,
+	    SquareType.START,SquareType.START,SquareType.PATH};
     private static final SquareType [] TREASURE = {SquareType.TREASURE,SquareType.TREASURE,SquareType.TREASURE,
 	    SquareType.TREASURE,SquareType.TREASURE,SquareType.TREASURE};
 
@@ -89,7 +91,7 @@ public class BrickMaker
     }
 
     private Brick createStart() {
-	SquareType [][] temp = { START, START, START, START, START, START};
+	SquareType [][] temp = { START, START, STARTOPENLEFT, STARTOPENLEFT, START, START};
 	return new Brick(temp, BrickType.START);
     }
     private Brick createTreasure(){
