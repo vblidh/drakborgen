@@ -3,8 +3,6 @@ package se.liu.ida.vikbl327.drakborgen;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.abs;
-
 /**
  * This class stores the representation of the board. Contains information on what bricks are on the board, and where heroes are
  * standing. Contains methods for placing new bricks on the board and for retrieving the SquareType of any given square.

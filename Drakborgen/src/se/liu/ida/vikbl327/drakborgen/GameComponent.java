@@ -15,13 +15,16 @@ public class GameComponent extends JComponent implements BoardListener
 {
     private Board gameBoard;
     private EnumMap<SquareType, Color> squareColors;
+    private int sunTimer;
 
     private static final int BRICK_SIZE = 60;
     private static final int SQUARE_SIZE = 10;
     private static final int TREASURE_ROW = 29;
     private static final int TEXT_SIZE = 18;
     private static final int BOARD_WIDTH = 13*6*SQUARE_SIZE;
+    private static final int SUNTIMERPLACEMENT = 10*6*SQUARE_SIZE + 10;
     private static final int MENU_SIZE = 60;
+    private static final int CIRCLE_RADIUS = 25;
     private static final int [] TREASURE_COLS = {36,37,38,39,40,41};
     private static final List<Color> COLORS = List.of(Color.BLACK, Color.lightGray, Color.darkGray, Color.GREEN, Color.ORANGE,
 						      Color.BLUE);
@@ -29,12 +32,17 @@ public class GameComponent extends JComponent implements BoardListener
     public GameComponent(final Board gameBoard) {
 	this.gameBoard = gameBoard;
 	this.squareColors = generateDefaultColors();
+	this.sunTimer = 30;
 
     }
 
 
     @Override public void boardChanged() {
 	this.repaint();
+    }
+
+    public void decrementSunTimer() {
+	this.sunTimer--;
     }
 
     @Override
@@ -50,6 +58,17 @@ public class GameComponent extends JComponent implements BoardListener
 			     SQUARE_SIZE-((row+1) % 6 == 0 && !isInTreasureRoom(row,col) ? 1 : 0));
 	    }
 	}
+	g2d.setColor(Color.BLACK);
+	g2d.fillRect(0, gameBoard.getHeight()*BRICK_SIZE, gameBoard.getWidth()*BRICK_SIZE, MENU_SIZE);
+
+
+
+	g2d.setColor(Color.YELLOW);
+	for (int i = 0; i < sunTimer; i++) {
+	    g2d.fillOval(i*(CIRCLE_RADIUS+2), SUNTIMERPLACEMENT, CIRCLE_RADIUS, CIRCLE_RADIUS);
+	}
+	g2d.setColor(Color.WHITE);
+	g2d.drawString("Rundor kvar tills game over: " + sunTimer, BOARD_WIDTH/4, SUNTIMERPLACEMENT+40);
 
 	AffineTransform saveAt = g2d.getTransform();
 	for (Character hero : gameBoard.getCharacters()) {

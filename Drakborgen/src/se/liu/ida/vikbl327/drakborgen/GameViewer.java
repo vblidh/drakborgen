@@ -18,6 +18,7 @@ public class GameViewer
     private static final int BRICK_SIZE = 60;
     private static final int TEXT_SIZE = 18;
     private static final SquareType [] ACCEPTED_SQUARES = {SquareType.PATH, SquareType.UNDISCOVERED, SquareType.TREASURE};
+    private static final BrickType [] TREASURE_BRICKS = {BrickType.TREASUREBOT, BrickType.TREASURETOP};
 
     private Board gameBoard;
     private GameComponent comp;
@@ -28,6 +29,7 @@ public class GameViewer
     private JButton brickButton;
     private JButton roomButton;
     private MouseInputAdapter mouseAdapter;
+    private boolean movedWithinTreasureRoom;
 
     private Point highLightedBrick;
 
@@ -40,6 +42,7 @@ public class GameViewer
 	this.currentHeroInfo = new JTextArea();
 	this.generator = new BrickGenerator();
 	this.highLightedBrick = null;
+
 	final JMenuBar menuBar = new JMenuBar();
 	final JMenu file = new JMenu("File");
 	Color backGround = new Color(92, 62, 10);
@@ -144,7 +147,6 @@ public class GameViewer
 	this.mouseAdapter = new MouseInputAdapter()
 	{
 	    @Override public void mousePressed(final MouseEvent e) {
-		super.mousePressed(e);
 		if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
 		    int row = e.getY()/BRICK_SIZE;
 		    int col = e.getX()/BRICK_SIZE;
@@ -169,7 +171,7 @@ public class GameViewer
 			}
 
 			if (!gameBoard.getBrick(row,col).getType().equals(BrickType.UNDISCOVERED))
-			    brickButton.setText("Flytta hjälte till markerad bricka");
+			    brickButton.setText("Flytta hjälte");
 		    }
 		}
 	    }
@@ -210,6 +212,10 @@ public class GameViewer
 		}
 	    }
 	    else {
+	        //eventlog.setText("Highlighted: " + gameBoard.getBrick(row,col).getType() + "Hero: " + gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType() + "\n");
+	        if (ArrayUtils.contains(TREASURE_BRICKS, gameBoard.getBrick(row,col).getType()) &&
+		    ArrayUtils.contains(TREASURE_BRICKS, gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType()))
+		    movedWithinTreasureRoom = true;
 		gameBoard.removeHighLight(row,col);
 	        currentHero.setyPos(row);
 	        currentHero.setxPos(col);
@@ -217,7 +223,11 @@ public class GameViewer
 	    }
 
 	    highLightedBrick = null;
+	    if (!movedWithinTreasureRoom) {
+		comp.decrementSunTimer();
+	    }
 	    brickButton.setText("Dra rumsbricka");
+	    movedWithinTreasureRoom = false;
         }
     }
 }

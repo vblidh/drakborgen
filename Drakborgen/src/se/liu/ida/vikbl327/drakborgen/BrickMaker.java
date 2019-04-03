@@ -106,6 +106,6 @@ public class BrickMaker
 
     private Brick createTreasureBot(){
 	SquareType [][] temp = { TREASURE, TREASURE, TREASUREOPENSIDES, TREASUREOPENSIDES, TREASURE, MIDOPEN};
-	return new Brick(temp, BrickType.TREASURETOP);
+	return new Brick(temp, BrickType.TREASUREBOT);
     }
 }
