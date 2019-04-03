@@ -17,6 +17,7 @@ public class Game
 	board.addCharacter(hero);
 	viewer.setCurrentHero(hero);
 	viewer.updateHeroInfo();
+
 /*
 	sleep(500);
 	board.placeBrick(0, 1, viewer.drawBrick(), Direction.RIGHT);

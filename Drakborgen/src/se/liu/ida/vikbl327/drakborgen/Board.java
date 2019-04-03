@@ -3,6 +3,8 @@ package se.liu.ida.vikbl327.drakborgen;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 /**
  * This class stores the representation of the board. Contains information on what bricks are on the board, and where heroes are
  * standing. Contains methods for placing new bricks on the board and for retrieving the SquareType of any given square.
@@ -85,23 +87,43 @@ public class Board
 	notifyListeners();
     }
 
+    public void highLight(int row, int col){
+        Brick brick = bricks[row][col];
+        bricks[row][col] = brick.highlightBrick();
+        notifyListeners();
+    }
 
-
-
-
+    public void removeHighLight(int row, int col){
+        int rotateCount = bricks[row][col].getTimesRotated();
+        Brick brick = maker.createBrick(bricks[row][col].getType());
+        if (rotateCount < 0) {
+            brick = brick.rotateRight();
+	}
+        else {
+	    for (int i = 0; i < rotateCount; i++) {
+		brick = brick.rotateLeft();
+	    }
+	}
+	brick.setTimesRotated(rotateCount);
+        bricks[row][col] = brick;
+        notifyListeners();
+    }
 
     public void placeBrick(int row, int col, BrickType type, Direction dir){
         Brick brick = maker.createBrick(type);
         switch (dir) {
 	    case DOWN:
 	        brick = brick.rotateRight();
+	        brick.setTimesRotated(-1);
 	        break;
 	    case UP:
 	        brick = brick.rotateLeft();
+	        brick.setTimesRotated(1);
 	        break;
 	    case LEFT:
 	        brick = brick.rotateLeft();
 	        brick = brick.rotateLeft();
+	        brick.setTimesRotated(2);
 	        break;
 	}
 

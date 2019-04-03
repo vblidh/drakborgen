@@ -23,7 +23,8 @@ public class GameComponent extends JComponent implements BoardListener
     private static final int BOARD_WIDTH = 13*6*SQUARE_SIZE;
     private static final int MENU_SIZE = 60;
     private static final int [] TREASURE_COLS = {36,37,38,39,40,41};
-    private static final List<Color> COLORS = List.of(Color.BLACK, Color.lightGray, Color.darkGray, Color.GREEN, Color.ORANGE);
+    private static final List<Color> COLORS = List.of(Color.BLACK, Color.lightGray, Color.darkGray, Color.GREEN, Color.ORANGE,
+						      Color.BLUE);
 
     public GameComponent(final Board gameBoard) {
 	this.gameBoard = gameBoard;
