@@ -73,6 +73,7 @@ public class GameViewer
 	brickButton.addActionListener(new DrawBrickAction());
 	roomButton.setFont(new Font("Helvetica", Font.BOLD, TEXT_SIZE));
 	roomButton.setBackground(Color.WHITE);
+	roomButton.addActionListener(new DrawRoomCardAction());
 	panel.add(currentHeroInfo);
 	panel.add(brickButton);
 	panel.add(roomButton);
@@ -87,8 +88,6 @@ public class GameViewer
 	frame.setJMenuBar(menuBar);
 	frame.pack();
 	frame.setVisible(true);
-
-
     }
 
     public GameComponent getComp() {
@@ -212,7 +211,6 @@ public class GameViewer
 		}
 	    }
 	    else {
-	        //eventlog.setText("Highlighted: " + gameBoard.getBrick(row,col).getType() + "Hero: " + gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType() + "\n");
 	        if (ArrayUtils.contains(TREASURE_BRICKS, gameBoard.getBrick(row,col).getType()) &&
 		    ArrayUtils.contains(TREASURE_BRICKS, gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType()))
 		    movedWithinTreasureRoom = true;
@@ -229,5 +227,11 @@ public class GameViewer
 	    brickButton.setText("Dra rumsbricka");
 	    movedWithinTreasureRoom = false;
         }
+    }
+    private class DrawRoomCardAction extends AbstractAction
+    {
+	@Override public void actionPerformed(final ActionEvent e) {
+	    eventlog.setText("Drog ett kort");
+	}
     }
 }
