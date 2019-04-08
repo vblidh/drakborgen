@@ -22,7 +22,8 @@ public class GameViewer
 
     private Board gameBoard;
     private GameComponent comp;
-    private final BrickGenerator generator;
+    private final BrickGenerator bgenerator;
+    private final CardGenerator cgenerator;
     private JTextArea eventlog;
     private Character currentHero;
     private JTextArea currentHeroInfo;
@@ -40,7 +41,8 @@ public class GameViewer
 	this.eventlog = new JTextArea();
 	this.currentHero = null;
 	this.currentHeroInfo = new JTextArea();
-	this.generator = new BrickGenerator();
+	this.bgenerator = new BrickGenerator();
+	this.cgenerator = new CardGenerator();
 	this.highLightedBrick = null;
 
 	final JMenuBar menuBar = new JMenuBar();
@@ -104,7 +106,7 @@ public class GameViewer
 	    int end = eventlog.getLineEndOffset(0);
 	    eventlog.replaceRange("", 0, end);
 	}
-        BrickType type = generator.generateBrick();
+        BrickType type = bgenerator.generateBrick();
         eventlog.append(type + " bricka placerad \n");
         return type;
     }
