@@ -8,7 +8,7 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * Paints out the game on a Jframe.
+ * Paints out the board on a Jframe.
  */
 
 public class GameComponent extends JComponent implements BoardListener
@@ -20,7 +20,6 @@ public class GameComponent extends JComponent implements BoardListener
     private static final int BRICK_SIZE = 60;
     private static final int SQUARE_SIZE = 10;
     private static final int TREASURE_ROW = 29;
-    private static final int TEXT_SIZE = 18;
     private static final int BOARD_WIDTH = 13*6*SQUARE_SIZE;
     private static final int SUNTIMERPLACEMENT = 10*6*SQUARE_SIZE + 10;
     private static final int MENU_SIZE = 60;
@@ -35,7 +34,6 @@ public class GameComponent extends JComponent implements BoardListener
 	this.sunTimer = 30;
 
     }
-
 
     public int getSunTimer() {
 	return sunTimer;
@@ -62,22 +60,21 @@ public class GameComponent extends JComponent implements BoardListener
 			     SQUARE_SIZE-((row+1) % 6 == 0 && !isInTreasureRoom(row,col) ? 1 : 0));
 	    }
 	}
+
+
 	g2d.setColor(Color.BLACK);
 	g2d.fillRect(0, gameBoard.getHeight()*BRICK_SIZE, gameBoard.getWidth()*BRICK_SIZE, MENU_SIZE);
-
-
 
 	g2d.setColor(Color.YELLOW);
 	for (int i = 0; i < sunTimer; i++) {
 	    g2d.fillOval(i*(CIRCLE_RADIUS+2), SUNTIMERPLACEMENT, CIRCLE_RADIUS, CIRCLE_RADIUS);
 	}
 	g2d.setColor(Color.WHITE);
-	g2d.drawString("Rundor kvar tills game over: " + sunTimer, BOARD_WIDTH/4, SUNTIMERPLACEMENT+40);
+	g2d.drawString("Rundor kvar tills alla kvarvarande hjältar dör: " + sunTimer, BOARD_WIDTH/4, SUNTIMERPLACEMENT+40);
 
 	AffineTransform saveAt = g2d.getTransform();
 	for (Character hero : gameBoard.getCharacters()) {
 	    ImageIcon icon = hero.getHeroIcon();
-	    System.out.println(icon.getIconHeight() + " " + icon.getIconWidth());
 
 	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    final AffineTransform at = AffineTransform.getScaleInstance(hero.getScaleX(), hero.getScaleY());
@@ -85,7 +82,6 @@ public class GameComponent extends JComponent implements BoardListener
 	    icon.paintIcon(this, g, hero.getCalculatedxPos(),hero.getCalculatedyPos());
 	    g2d.setTransform(saveAt);
 	}
-
 
 
 	g2d.setColor(Color.BLACK);

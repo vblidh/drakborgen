@@ -1,5 +1,9 @@
 package se.liu.ida.vikbl327.drakborgen;
 
+
+/**
+ * The different room cards that can be drawn after moving to a new brick.
+ */
 public enum RoomCard
 {
     EMPTY {
@@ -37,5 +41,4 @@ public enum RoomCard
 	    return "Rummet innehåller en sarkofag\n";
 	}
     }
-
 }

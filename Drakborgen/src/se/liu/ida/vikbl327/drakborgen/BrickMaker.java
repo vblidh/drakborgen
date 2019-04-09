@@ -53,9 +53,10 @@ public class BrickMaker
 	    case START:
 	        return createStart();
 	    case TREASURETOP:
-	        return createTreasureTop();
+	        return createTreasureTop(); //TODO: Make one treasure brick and rotate it in board constructor
 	    case TREASUREBOT:
 	        return createTreasureBot();
+	    //TODO: Add more bricks
 	    default:
 	        return createUndiscovered();
 	}

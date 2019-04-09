@@ -21,11 +21,13 @@ public class GameViewer
     private static final int TEXT_SIZE = 18;
     private static final SquareType [] ACCEPTED_SQUARES = {SquareType.PATH, SquareType.UNDISCOVERED, SquareType.TREASURE};
     private static final BrickType [] TREASURE_BRICKS = {BrickType.TREASUREBOT, BrickType.TREASURETOP};
+    private static final BrickType [] EXCEPTIONBRICKS = {BrickType.TREASUREBOT, BrickType.TREASURETOP, BrickType.START};
 
     private Board gameBoard;
     private GameComponent comp;
     private final BrickGenerator bgenerator;
     private final CardGenerator cgenerator;
+    private JFrame frame;
     private JTextArea eventlog;
     private Character currentHero;
     private JTextArea currentHeroInfo;
@@ -34,36 +36,36 @@ public class GameViewer
     private MouseInputAdapter mouseAdapter;
     private boolean movedWithinTreasureRoom;
 
-    private List<Actions> allowedActions;
+    private List<Action> allowedActions;
 
     private Point highLightedBrick;
-    private String turnPhase;
+    private int numberOfPlayers;
+    private int currentPlayer;
 
     public GameViewer(final Board gameBoard) {
 	this.gameBoard = gameBoard;
-	JFrame frame = new JFrame("Drakborgen");
+	this.frame = new JFrame("Drakborgen");
 	this.comp = new GameComponent(gameBoard);
 	gameBoard.addBoardListener(comp);
-	this.eventlog = new JTextArea();
 	this.currentHero = null;
-	this.currentHeroInfo = new JTextArea();
+
 	this.bgenerator = new BrickGenerator();
 	this.cgenerator = new CardGenerator();
 	this.highLightedBrick = null;
-	this.turnPhase = "Phase 1";
 	Character hero = gameBoard.getCharacter();
 	this.currentHero = hero;
 	this.allowedActions = new ArrayList<>();
-	this.allowedActions.add(Actions.MOVEHERO);
-	updateHeroInfo();
+	this.allowedActions.add(Action.MOVEHERO);
 	gameBoard.addCharacter(hero);
-	/*
+	this.numberOfPlayers = gameBoard.getCharacters().size();
+	this.currentPlayer = 1;
+
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	double width = screenSize.getWidth();
 	double height = screenSize.getHeight();
 
 	System.out.println("Width: " + width + " Height: " + height);
-	*/
+
 	final JMenuBar menuBar = new JMenuBar();
 	final JMenu file = new JMenu("File");
 	Color backGround = new Color(92, 62, 10);
@@ -72,6 +74,82 @@ public class GameViewer
 	quit.addActionListener(new QuitAction());
 	menuBar.add(file);
 
+	initializeComponents();
+	initializeMouseAdapter();
+	comp.addMouseListener(mouseAdapter);
+
+
+	JPanel panel = new JPanel();
+	panel.setBackground(backGround);
+	panel.add(currentHeroInfo);
+	panel.add(brickButton);
+	panel.add(roomButton);
+	panel.add(eventlog);
+
+
+	updateHeroInfo();
+	frame.setLayout(new GridLayout());
+	frame.add(comp, BorderLayout.WEST);
+	frame.add(panel, BorderLayout.EAST);
+	frame.setJMenuBar(menuBar);
+	frame.pack();
+	frame.setVisible(true);
+
+
+    }
+
+    public GameComponent getComp() {
+	return comp;
+    }
+
+    public void setCurrentHero(final Character currentHero) {
+	this.currentHero = currentHero;
+    }
+
+
+    private void initializeMouseAdapter(){
+	this.mouseAdapter = new MouseInputAdapter()
+	{
+	    @Override public void mousePressed(final MouseEvent e) {
+		if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
+		    if (!allowedActions.contains(Action.MOVEHERO)) {
+		        eventlog.setText("Du har redan förflyttat hjälten denna runda! \n");
+		        return;
+		    }
+		    int row = e.getY()/BRICK_SIZE;
+		    int col = e.getX()/BRICK_SIZE;
+		    if (decideDirection(row,col) == Direction.INVALID)
+		        eventlog.setText("Du kan bara flytta till en ruta med öppen väg innanför Drakborgen! \n");
+		    else {
+			if (highLightedBrick != null) {
+			    if (highLightedBrick.y == row && highLightedBrick.x == col) {
+				gameBoard.removeHighLight(row, col);
+				highLightedBrick = null;
+			    }
+			    else {
+		       		gameBoard.highLight(row,col);
+		       		gameBoard.removeHighLight(highLightedBrick.y, highLightedBrick.x);
+		       		highLightedBrick.setLocation(col,row);
+			    }
+			}
+			else {
+			    gameBoard.highLight(row,col);
+			    highLightedBrick = new Point();
+			    highLightedBrick.setLocation(col,row);
+			}
+
+			if (gameBoard.getBrick(row,col).getType().equals(BrickType.UNDISCOVERED))
+			    brickButton.setText("Dra rumsbricka");
+			else brickButton.setText("Flytta hjälte");
+		    }
+		}
+	    }
+	};
+    }
+
+    private void initializeComponents(){
+
+	this.eventlog = new JTextArea();
 	eventlog.setFont(new Font("Helvetica",Font.PLAIN, TEXT_SIZE));
 	eventlog.setForeground(Color.GREEN);
 	eventlog.setBackground(Color.BLACK);
@@ -79,8 +157,7 @@ public class GameViewer
 	eventlog.setRows(5);
 
 
-	JPanel panel = new JPanel();
-	panel.setBackground(backGround);
+	this.currentHeroInfo = new JTextArea();
 	currentHeroInfo.setBackground(Color.WHITE);
 	currentHeroInfo.setForeground(Color.BLACK);
 	currentHeroInfo.setFont(new Font("Monospaced", Font.BOLD, TEXT_SIZE));
@@ -95,28 +172,7 @@ public class GameViewer
 	roomButton.setFont(new Font("Helvetica", Font.BOLD, TEXT_SIZE));
 	roomButton.setBackground(Color.WHITE);
 	roomButton.addActionListener(new DrawRoomCardAction());
-	panel.add(currentHeroInfo);
-	panel.add(brickButton);
-	panel.add(roomButton);
-	panel.add(eventlog);
 
-	initializeMouseAdapter();
-	comp.addMouseListener(mouseAdapter);
-
-	frame.setLayout(new GridLayout());
-	frame.add(comp, BorderLayout.WEST);
-	frame.add(panel, BorderLayout.EAST);
-	frame.setJMenuBar(menuBar);
-	frame.pack();
-	frame.setVisible(true);
-    }
-
-    public GameComponent getComp() {
-	return comp;
-    }
-
-    public void setCurrentHero(final Character currentHero) {
-	this.currentHero = currentHero;
     }
 
     public BrickType drawBrick() throws BadLocationException {
@@ -163,53 +219,19 @@ public class GameViewer
         else return Direction.INVALID;
     }
 
-    private void initializeMouseAdapter(){
-	this.mouseAdapter = new MouseInputAdapter()
-	{
-	    @Override public void mousePressed(final MouseEvent e) {
-		if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
-		    if (!allowedActions.contains(Actions.MOVEHERO)) {
-		        eventlog.setText("Du har redan förflyttat hjälten denna runda! \n");
-		        return;
-		    }
-		    int row = e.getY()/BRICK_SIZE;
-		    int col = e.getX()/BRICK_SIZE;
-		    if (decideDirection(row,col) == Direction.INVALID)
-		        eventlog.setText("Du kan bara flytta till en ruta med öppen väg innanför Drakborgen! \n");
-		    else {
-			if (highLightedBrick != null) {
-			    if (highLightedBrick.y == row && highLightedBrick.x == col) {
-				gameBoard.removeHighLight(row, col);
-				highLightedBrick = null;
-			    }
-			    else {
-		       		gameBoard.highLight(row,col);
-		       		gameBoard.removeHighLight(highLightedBrick.y, highLightedBrick.x);
-		       		highLightedBrick.setLocation(col,row);
-			    }
-			}
-			else {
-			    gameBoard.highLight(row,col);
-			    highLightedBrick = new Point();
-			    highLightedBrick.setLocation(col,row);
-			}
-
-			if (!gameBoard.getBrick(row,col).getType().equals(BrickType.UNDISCOVERED))
-			    brickButton.setText("Flytta hjälte");
-		    }
-		}
-	    }
-	};
-    }
-
-    private void processGame(){
-        if (comp.getSunTimer() == 0) {
-            eventlog.setText("Tiden är slut!");
-            return;
+    private void advanceTurn(){
+	allowedActions.clear();
+	allowedActions.add(Action.MOVEHERO);
+	Character hero = gameBoard.getCharacter();
+	currentHero = hero;
+	gameBoard.addCharacter(hero);
+	updateHeroInfo();
+	if  (currentPlayer == numberOfPlayers) {
+	    comp.decrementSunTimer();
+	    currentPlayer = 1;
+	    //JOptionPane.showInternalMessageDialog(frame.getParent(), "En runda har passerat!");
 	}
-        if (turnPhase.equals("Phase 1")) {
-
-	}
+	else currentPlayer++;
     }
 
 
@@ -242,7 +264,7 @@ public class GameViewer
 		    currentHero.setxPos(col);
 	    }
 		catch (BadLocationException ex) {
-		    System.out.println(ex.getMessage());
+		    JOptionPane.showInternalMessageDialog(frame.getParent(), ex.getMessage());
 		}
 	    }
 	    else {
@@ -256,28 +278,37 @@ public class GameViewer
 	    }
 
 	    highLightedBrick = null;
+	    BrickType curBrick = gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType();
+	    System.out.println(curBrick);
 
 	    brickButton.setText("Dra rumsbricka");
-	    allowedActions.clear();
-	    allowedActions.add(Actions.DRAWROOMCARD);
+	    if ((!movedWithinTreasureRoom)){
+		allowedActions.clear();
+		allowedActions.add(Action.DRAWROOMCARD);
+	    }
 
+	    else movedWithinTreasureRoom = false;
+
+	    if (ArrayUtils.contains(EXCEPTIONBRICKS, curBrick)) {
+		eventlog.append("Du behöver ej dra en rumsbricka på den här rutan");
+		advanceTurn();
+	    }
         }
     }
+
     private class DrawRoomCardAction extends AbstractAction
     {
 	@Override public void actionPerformed(final ActionEvent e) {
+	    if (!allowedActions.contains(Action.DRAWROOMCARD)) {
+	        eventlog.setText("Du kan bara dra ett rumskort efter du har flyttat till en ny ruta \n");
+	        return;
+	    }
 	    RoomCard card = cgenerator.drawRoomCard();
 	    eventlog.setText(card.toString());
-	    if (!movedWithinTreasureRoom) {
-		comp.decrementSunTimer();
-	    }
-	    movedWithinTreasureRoom = false;
-	    allowedActions.clear();
-	    allowedActions.add(Actions.MOVEHERO);
-	    Character hero = gameBoard.getCharacter();
-	    currentHero = hero;
-	    gameBoard.addCharacter(hero);
-	    updateHeroInfo();
+	    //TODO: Add event relative to the card drawn
+
+	    advanceTurn();
 	}
     }
 }
+

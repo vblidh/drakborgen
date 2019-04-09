@@ -1,13 +1,15 @@
 package se.liu.ida.vikbl327.drakborgen;
 
-import se.liu.ida.vikbl327.drakborgen.Heroes.Sigier;
+import se.liu.ida.vikbl327.drakborgen.heroes.Sigier;
 
 import javax.swing.text.BadLocationException;
 
 import static java.lang.Thread.sleep;
 
-public class Game
+public final class Game
 {
+
+    private Game() {}
 
     public static void main(String[] args) throws InterruptedException, BadLocationException {
 	Board board = new Board(10,13);
@@ -17,6 +19,7 @@ public class Game
 	board.addCharacter(hero2);
 	hero2.setyPos(0);
 	hero2.setxPos(12);
+
 	GameViewer viewer = new GameViewer(board);
 
 

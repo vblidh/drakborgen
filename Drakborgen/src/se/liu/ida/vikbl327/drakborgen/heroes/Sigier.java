@@ -1,4 +1,4 @@
-package se.liu.ida.vikbl327.drakborgen.Heroes;
+package se.liu.ida.vikbl327.drakborgen.heroes;
 
 import se.liu.ida.vikbl327.drakborgen.Character;
 import javax.swing.*;
@@ -62,6 +62,10 @@ public class Sigier implements Character
 
     public int getCurrentHealth() {
 	return currentHealth;
+    }
+
+    public void setCurrentHealth(final int currentHealth) {
+	this.currentHealth = currentHealth;
     }
 
     public int getxPos() {

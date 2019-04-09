@@ -22,6 +22,8 @@ public interface Character
 
     public int getCurrentHealth();
 
+    public void setCurrentHealth(final int currentHealth);
+
     public int getxPos();
 
     public int getyPos();

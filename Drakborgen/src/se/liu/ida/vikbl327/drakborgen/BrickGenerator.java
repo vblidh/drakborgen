@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * Brickgenerator generates a shuffled list of bricktypes that can be drawn by calling the generateBrick() method.
+ */
+
 public class BrickGenerator
 {
     private static final int BRICKS_AT_START = 80;
@@ -14,13 +18,11 @@ public class BrickGenerator
     private static final int AHEADRIGHT_AT_START = 10;
     private static final int LEFTRIGHT_AT_START = 10;
 
-    private int numberOfBricks;
 
     private Random rnd;
     private ArrayList<BrickType> bricks;
 
     public BrickGenerator() {
-	this.numberOfBricks = BRICKS_AT_START;
 	rnd = new Random();
 
 	bricks = new ArrayList<>();
