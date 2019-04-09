@@ -73,6 +73,7 @@ public class GameComponent extends JComponent implements BoardListener
 	AffineTransform saveAt = g2d.getTransform();
 	for (Character hero : gameBoard.getCharacters()) {
 	    ImageIcon icon = hero.getHeroIcon();
+	    System.out.println(icon.getIconHeight() + " " + icon.getIconWidth());
 
 	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    final AffineTransform at = AffineTransform.getScaleInstance(hero.getScaleX(), hero.getScaleY());
