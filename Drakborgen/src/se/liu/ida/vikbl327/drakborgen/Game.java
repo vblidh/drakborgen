@@ -11,12 +11,15 @@ public class Game
 
     public static void main(String[] args) throws InterruptedException, BadLocationException {
 	Board board = new Board(10,13);
-	GameViewer viewer = new GameViewer(board);
-	board.addBoardListener(viewer.getComp());
 	Character hero = new Sigier();
 	board.addCharacter(hero);
-	viewer.setCurrentHero(hero);
-	viewer.updateHeroInfo();
+	Character hero2 = new Sigier();
+	board.addCharacter(hero2);
+	hero2.setyPos(0);
+	hero2.setxPos(12);
+	GameViewer viewer = new GameViewer(board);
+
+
 
 /*
 	sleep(500);

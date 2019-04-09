@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -32,19 +34,36 @@ public class GameViewer
     private MouseInputAdapter mouseAdapter;
     private boolean movedWithinTreasureRoom;
 
+    private List<Actions> allowedActions;
+
     private Point highLightedBrick;
+    private String turnPhase;
 
     public GameViewer(final Board gameBoard) {
 	this.gameBoard = gameBoard;
 	JFrame frame = new JFrame("Drakborgen");
 	this.comp = new GameComponent(gameBoard);
+	gameBoard.addBoardListener(comp);
 	this.eventlog = new JTextArea();
 	this.currentHero = null;
 	this.currentHeroInfo = new JTextArea();
 	this.bgenerator = new BrickGenerator();
 	this.cgenerator = new CardGenerator();
 	this.highLightedBrick = null;
+	this.turnPhase = "Phase 1";
+	Character hero = gameBoard.getCharacter();
+	this.currentHero = hero;
+	this.allowedActions = new ArrayList<>();
+	this.allowedActions.add(Actions.MOVEHERO);
+	updateHeroInfo();
+	gameBoard.addCharacter(hero);
+	/*
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	double width = screenSize.getWidth();
+	double height = screenSize.getHeight();
 
+	System.out.println("Width: " + width + " Height: " + height);
+	*/
 	final JMenuBar menuBar = new JMenuBar();
 	final JMenu file = new JMenu("File");
 	Color backGround = new Color(92, 62, 10);
@@ -149,6 +168,10 @@ public class GameViewer
 	{
 	    @Override public void mousePressed(final MouseEvent e) {
 		if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
+		    if (!allowedActions.contains(Actions.MOVEHERO)) {
+		        eventlog.setText("Du har redan förflyttat hjälten denna runda! \n");
+		        return;
+		    }
 		    int row = e.getY()/BRICK_SIZE;
 		    int col = e.getX()/BRICK_SIZE;
 		    if (decideDirection(row,col) == Direction.INVALID)
@@ -177,6 +200,16 @@ public class GameViewer
 		}
 	    }
 	};
+    }
+
+    private void processGame(){
+        if (comp.getSunTimer() == 0) {
+            eventlog.setText("Tiden är slut!");
+            return;
+	}
+        if (turnPhase.equals("Phase 1")) {
+
+	}
     }
 
 
@@ -223,17 +256,28 @@ public class GameViewer
 	    }
 
 	    highLightedBrick = null;
-	    if (!movedWithinTreasureRoom) {
-		comp.decrementSunTimer();
-	    }
+
 	    brickButton.setText("Dra rumsbricka");
-	    movedWithinTreasureRoom = false;
+	    allowedActions.clear();
+	    allowedActions.add(Actions.DRAWROOMCARD);
+
         }
     }
     private class DrawRoomCardAction extends AbstractAction
     {
 	@Override public void actionPerformed(final ActionEvent e) {
-	    eventlog.setText("Drog ett kort");
+	    RoomCard card = cgenerator.drawRoomCard();
+	    eventlog.setText(card.toString());
+	    if (!movedWithinTreasureRoom) {
+		comp.decrementSunTimer();
+	    }
+	    movedWithinTreasureRoom = false;
+	    allowedActions.clear();
+	    allowedActions.add(Actions.MOVEHERO);
+	    Character hero = gameBoard.getCharacter();
+	    currentHero = hero;
+	    gameBoard.addCharacter(hero);
+	    updateHeroInfo();
 	}
     }
 }
