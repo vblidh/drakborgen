@@ -37,6 +37,10 @@ public class GameComponent extends JComponent implements BoardListener
     }
 
 
+    public int getSunTimer() {
+	return sunTimer;
+    }
+
     @Override public void boardChanged() {
 	this.repaint();
     }
@@ -79,10 +83,11 @@ public class GameComponent extends JComponent implements BoardListener
 	    final AffineTransform at = AffineTransform.getScaleInstance(hero.getScaleX(), hero.getScaleY());
 	    g2d.setTransform(at);
 	    icon.paintIcon(this, g, hero.getCalculatedxPos(),hero.getCalculatedyPos());
+	    g2d.setTransform(saveAt);
 	}
 
 
-	g2d.setTransform(saveAt);
+
 	g2d.setColor(Color.BLACK);
 	/*
 	if (currentHero != null) {
@@ -116,6 +121,7 @@ public class GameComponent extends JComponent implements BoardListener
         }
 
     public Dimension getPreferredSize(){
-        return new Dimension(gameBoard.getWidth()*BRICK_SIZE, gameBoard.getHeight() * BRICK_SIZE+MENU_SIZE);
+        Dimension dim = new Dimension(gameBoard.getWidth()*BRICK_SIZE, gameBoard.getHeight() * BRICK_SIZE+MENU_SIZE);
+        return dim;
     }
 }

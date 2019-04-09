@@ -1,6 +1,8 @@
 package se.liu.ida.vikbl327.drakborgen;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -11,7 +13,7 @@ public class Board
 {
     private Brick[][] bricks;
     private List<BoardListener> listeners;
-    private List<Character> characters;
+    private Deque<Character> characters;
 
     private int height;
     private int width;
@@ -22,7 +24,7 @@ public class Board
 	this.width = width;
 	this.maker = new BrickMaker();
 	this.listeners = new ArrayList<>();
-	this.characters = new ArrayList<>();
+	this.characters = new LinkedList<>();
 	this.bricks = new Brick[height][width];
 
 	clearBoard();
@@ -38,8 +40,12 @@ public class Board
 	return width;
     }
 
-    public List<Character> getCharacters() {
+    public Deque<Character> getCharacters() {
 	return characters;
+    }
+
+    public Character getCharacter() {
+	return characters.removeFirst();
     }
 
     public Brick getBrick(int row, int col) {
@@ -64,7 +70,7 @@ public class Board
     }
 
     public void addCharacter(Character hero){
-        characters.add(hero);
+        characters.addLast(hero);
         notifyListeners();
     }
 
