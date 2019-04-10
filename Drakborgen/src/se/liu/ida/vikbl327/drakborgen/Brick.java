@@ -83,8 +83,8 @@ public class Brick
     public void unHighlightBrickAlt() {
 	for (int i = 1; i < 5; i++) {
 	    for (int j = 1; j < 5; j++) {
-		brickSquares[i][j] = type == BrickType.START ? SquareType.START :
-				(type == BrickType.TREASUREBOT || type == BrickType.TREASURETOP) ? SquareType.TREASURE : SquareType.PATH;
+		brickSquares[i][j] = type.equals(BrickType.START) ? SquareType.START :
+				     (type.equals(BrickType.TREASURE)) ? SquareType.TREASURE : SquareType.PATH;
 	    }
 	}
     }

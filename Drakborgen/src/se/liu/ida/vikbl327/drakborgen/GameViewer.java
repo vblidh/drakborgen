@@ -11,7 +11,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 
 
 public class GameViewer
@@ -20,8 +20,7 @@ public class GameViewer
     private static final int BRICK_SIZE = 60;
     private static final int TEXT_SIZE = 18;
     private static final SquareType [] ACCEPTED_SQUARES = {SquareType.PATH, SquareType.UNDISCOVERED, SquareType.TREASURE};
-    private static final BrickType [] TREASURE_BRICKS = {BrickType.TREASUREBOT, BrickType.TREASURETOP};
-    private static final BrickType [] EXCEPTIONBRICKS = {BrickType.TREASUREBOT, BrickType.TREASURETOP, BrickType.START};
+    private static final BrickType [] EXCEPTIONBRICKS = {BrickType.TREASURE,BrickType.START};
 
     private Board gameBoard;
     private GameComponent comp;
@@ -234,6 +233,66 @@ public class GameViewer
 	else currentPlayer++;
     }
 
+    private void handleRoomCard(RoomCard card){
+        Random rnd = new Random();
+	final Object[] options = {"Slå tärning"};
+	int o;
+        switch (card){
+	    case JEWELRY:
+	        break;
+	    case ROOFFALL:
+	        o = JOptionPane.showOptionDialog(frame.getParent(),
+					     "Taket över dig rasar, du måste slå med en 6-sidig tärning för att se om du överlever. " +
+					     "Om tärningen visar en 1:a dör du och kan inte forstätta spela Drakborgen", "Taket rasar!",
+					     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+	        if (o==0) {
+	            int r = rnd.nextInt(6) + 1;
+	            eventlog.append("Tärningen visar: " + r + "\n");
+	            if (r==1) {
+	                JOptionPane.showMessageDialog(frame.getParent(), "Taket rasar ner över dig och du dör" +
+									 "omedelbart. Du har förlorat");
+	                currentHero.setCurrentHealth(0);
+		    }
+	            else {
+	                JOptionPane.showMessageDialog(frame.getParent(), "Du lyckas undvika raset, och kan forsätta ditt äventyr");
+		    }
+		}
+	        break;
+	    case ARROWTRAP:
+	        o = JOptionPane.showOptionDialog(
+	        	frame.getParent(),
+			"Plötsligt börjar pilar skjutas ut från väggarna och du tar skador motsvarande T12 - din RF",
+			card.toString(),
+			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+	        if (o==0) {
+	            int r = rnd.nextInt(12) + 1;
+	            eventlog.append("Tärningen visar: " + r + "\n");
+	            int damageTaken = r - currentHero.getArmorFactor();
+	            if (damageTaken > 0) {
+	                currentHero.setCurrentHealth(currentHero.getCurrentHealth()-damageTaken);
+			JOptionPane.showMessageDialog(
+				frame.getParent(),
+				"Pilarna penetrerar din rustning och du tar " + damageTaken + " skada");
+		    }
+	            else JOptionPane.showMessageDialog(
+	            	frame.getParent(),
+			"Pilarna lyckas inte penetrera din rustning, du tar ingen skada");
+		}
+	        break;
+	    case SKELETONAMBUSH:
+		o = JOptionPane.showOptionDialog(frame.getParent(),
+						 "Du blir överfallen av ett skelett, du måste först slå T12-TF för att se" +
+						 "hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss", card.toString(),
+						 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+		if (o==0) {
+		    int r = rnd.nextInt(12)+1;
+		    eventlog.append();
+		}
+	    default:
+		JOptionPane.showInternalMessageDialog(frame.getParent(), card.toString(), "Rumskort", JOptionPane.INFORMATION_MESSAGE);
+	}
+    }
+
 
     private class QuitAction extends AbstractAction
     {
@@ -268,8 +327,8 @@ public class GameViewer
 		}
 	    }
 	    else {
-	        if (ArrayUtils.contains(TREASURE_BRICKS, gameBoard.getBrick(row,col).getType()) &&
-		    ArrayUtils.contains(TREASURE_BRICKS, gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType()))
+	        if (gameBoard.getBrick(row,col).getType().equals(BrickType.TREASURE) &&
+		    gameBoard.getBrick(currentHero.getyPos(),currentHero.getxPos()).getType().equals(BrickType.TREASURE))
 		    movedWithinTreasureRoom = true;
 		gameBoard.removeHighLight(row,col);
 	        currentHero.setyPos(row);
@@ -281,18 +340,20 @@ public class GameViewer
 	    BrickType curBrick = gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType();
 	    System.out.println(curBrick);
 
-	    brickButton.setText("Dra rumsbricka");
-	    if ((!movedWithinTreasureRoom)){
+	    if (ArrayUtils.contains(EXCEPTIONBRICKS, curBrick) && !movedWithinTreasureRoom) {
+		eventlog.append("Du behöver ej dra ett rumskort på den här rutan");
+		advanceTurn();
+	    }
+
+
+	    else if ((!movedWithinTreasureRoom)){
 		allowedActions.clear();
 		allowedActions.add(Action.DRAWROOMCARD);
 	    }
 
-	    else movedWithinTreasureRoom = false;
 
-	    if (ArrayUtils.contains(EXCEPTIONBRICKS, curBrick)) {
-		eventlog.append("Du behöver ej dra en rumsbricka på den här rutan");
-		advanceTurn();
-	    }
+	    brickButton.setText("Dra rumsbricka");
+	    movedWithinTreasureRoom = false;
         }
     }
 
@@ -304,7 +365,10 @@ public class GameViewer
 	        return;
 	    }
 	    RoomCard card = cgenerator.drawRoomCard();
-	    eventlog.setText(card.toString());
+	    allowedActions.clear();
+	    handleRoomCard(card);
+
+
 	    //TODO: Add event relative to the card drawn
 
 	    advanceTurn();

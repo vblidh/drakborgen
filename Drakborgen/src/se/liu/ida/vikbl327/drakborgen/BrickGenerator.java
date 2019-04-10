@@ -1,22 +1,18 @@
 package se.liu.ida.vikbl327.drakborgen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
 /**
- * Brickgenerator generates a shuffled list of bricktypes that can be drawn by calling the generateBrick() method.
+ * Brickgenerator generates a shuffled list of bricktypes that can be drawn from by calling the generateBrick() method.
  */
 
 public class BrickGenerator
 {
-    private static final int BRICKS_AT_START = 80;
-    private static final int AHEAD_AT_START = 20;
-    private static final int LEFT_AT_START = 15;
-    private static final int RIGHT_AT_START = 15;
-    private static final int AHEADLEFT_AT_START = 10;
-    private static final int AHEADRIGHT_AT_START = 10;
-    private static final int LEFTRIGHT_AT_START = 10;
+
+    private static final int [] AMOUNTOFBRICKS = {10, 10, 10, 15, 15, 15, 15};
 
 
     private Random rnd;
@@ -37,21 +33,16 @@ public class BrickGenerator
     }
 
     private void initializeBrickList(){
-	for (int i = 0; i < AHEAD_AT_START; i++) {
-	    if (i < AHEADLEFT_AT_START){
-		bricks.add(BrickType.AHEADLEFT);
-		bricks.add(BrickType.AHEADRIGHT);
-		bricks.add(BrickType.LEFTRIGHT);
-		bricks.add(BrickType.LEFT);
-		bricks.add(BrickType.RIGHT);
-	    }
 
-	    else if (i < LEFT_AT_START) {
-		bricks.add(BrickType.LEFT);
-		bricks.add(BrickType.RIGHT);
+	BrickType [] placeableBricks = Arrays.copyOfRange(BrickType.values(), 3, BrickType.values().length);
+	int k = 0;
+	for (BrickType bt : placeableBricks) {
+	    for (int i = 0; i < AMOUNTOFBRICKS[k]; i++) {
+		bricks.add(bt);
 	    }
-	    bricks.add(BrickType.AHEAD);
+	    k++;
 	}
+
 	Collections.shuffle(bricks, rnd);
     }
 }

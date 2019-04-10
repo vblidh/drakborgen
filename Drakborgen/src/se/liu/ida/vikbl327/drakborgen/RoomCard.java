@@ -40,5 +40,40 @@ public enum RoomCard
 	@Override public String toString() {
 	    return "Rummet innehåller en sarkofag\n";
 	}
+    },
+    ARROWTRAP {
+	@Override public String toString() {
+	    return "Pilar ur vägg";
+	}
+    },
+    ROOFFALL {
+	@Override public String toString() {
+	    return "Taket rasar";
+	}
+    },
+    SPEARTRAP {
+	@Override public String toString() {
+	    return "Spjutfälla";
+	}
+    },
+    TROLLAMBUSH {
+	@Override public String toString() {
+	    return "Du blir överfallen av ett troll!";
+	}
+    },
+    SKELETONAMBUSH {
+	@Override public String toString() {
+	    return "Du blir överfallen av ett skelett!";
+	}
+    },
+    ORCHAMBUSH {
+	@Override public String toString() {
+	    return "Du blir överfallen av en orch";
+	}
+    },
+    JEWELRY {
+	@Override public String toString() {
+	    return "Du fann ett smycke!";
+	}
     }
 }

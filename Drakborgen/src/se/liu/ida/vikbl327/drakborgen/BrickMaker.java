@@ -50,11 +50,11 @@ public class BrickMaker
 	        return createAheadRight();
 	    case LEFTRIGHT:
 	        return createLeftRight();
+	    case FOURWAY:
+	        return createFourWay();
 	    case START:
 	        return createStart();
-	    case TREASURETOP:
-	        return createTreasureTop(); //TODO: Make one treasure brick and rotate it in board constructor
-	    case TREASUREBOT:
+	    case TREASURE:
 	        return createTreasureBot();
 	    //TODO: Add more bricks
 	    default:
@@ -100,13 +100,13 @@ public class BrickMaker
 	return new Brick(temp, BrickType.START);
     }
 
-    private Brick createTreasureTop(){
-	SquareType [][] temp = { MIDOPEN, TREASURE, TREASUREOPENSIDES, TREASUREOPENSIDES, TREASURE, TREASURE};
-	return new Brick(temp, BrickType.TREASURETOP);
-    }
-
     private Brick createTreasureBot(){
 	SquareType [][] temp = { TREASURE, TREASURE, TREASUREOPENSIDES, TREASUREOPENSIDES, TREASURE, MIDOPEN};
-	return new Brick(temp, BrickType.TREASUREBOT);
+	return new Brick(temp, BrickType.TREASURE);
+    }
+
+    private Brick createFourWay(){
+        SquareType [][] temp = { MIDOPEN, ROOM, FULLPATH, FULLPATH, ROOM, MIDOPEN};
+        return new Brick(temp, BrickType.FOURWAY);
     }
 }

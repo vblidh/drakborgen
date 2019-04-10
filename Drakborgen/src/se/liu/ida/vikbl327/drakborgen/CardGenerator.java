@@ -8,7 +8,7 @@ import java.util.Random;
 public class CardGenerator
 {
 
-    private static final int [] AMOUNT_OF_ROOMCARDS = {30,4,3,3,3,2,5};
+    private static final int [] AMOUNT_OF_ROOMCARDS = {30,4,3,3,3,2,5,2,2,2,1,2,2,5};
 
     private Random rnd;
     private List<RoomCard> roomCards;
@@ -22,7 +22,7 @@ public class CardGenerator
 
     private void initializeRoomCards(){
     	int k = 0;
-    	for (RoomCard rc : RoomCard.values()) {
+    	for (RoomCard rc :  RoomCard.values()) {
             for (int i = 0; i < AMOUNT_OF_ROOMCARDS[k]; i++) {
                 roomCards.add(rc);
             }
@@ -34,7 +34,6 @@ public class CardGenerator
     public RoomCard drawRoomCard() {
         if (roomCards.isEmpty()) initializeRoomCards();
         int r = rnd.nextInt(roomCards.size());
-        RoomCard card = roomCards.remove(r);
-        return card;
+        return roomCards.remove(r);
     }
 }

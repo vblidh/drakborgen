@@ -17,8 +17,8 @@ public final class Game
 	board.addCharacter(hero);
 	Character hero2 = new Sigier();
 	board.addCharacter(hero2);
-	hero2.setyPos(0);
-	hero2.setxPos(12);
+	hero2.setyPos(9);
+	hero2.setxPos(0);
 
 	GameViewer viewer = new GameViewer(board);
 

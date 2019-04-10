@@ -16,17 +16,11 @@ public enum BrickType
     	    return "Startbricka";
     	}
     },
-    TREASURETOP {
-	@Override public String toString() {
-	    return "Skattkammare";
-	}
-    },
-    TREASUREBOT {
+    TREASURE {
 	@Override public String toString() {
 	    return "Skattkammare";
     	}
     },
-
     AHEAD {
 	@Override public String toString() {
 	    return "Rum";
@@ -56,5 +50,10 @@ public enum BrickType
 	@Override public String toString() {
 		    return "Rum";
 		}
+    },
+    FOURWAY {
+	@Override public String toString() {
+	    return "Rum";
+	}
     }
 }

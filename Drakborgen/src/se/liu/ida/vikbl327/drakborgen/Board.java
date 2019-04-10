@@ -1,9 +1,9 @@
 package se.liu.ida.vikbl327.drakborgen;
 
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * This class stores the representation of the board. Contains information on what bricks are on the board, and where heroes are
@@ -13,7 +13,7 @@ public class Board
 {
     private Brick[][] bricks;
     private List<BoardListener> listeners;
-    private Deque<Character> characters;
+    private Queue<Character> characters;
 
     private int height;
     private int width;
@@ -40,12 +40,12 @@ public class Board
 	return width;
     }
 
-    public Deque<Character> getCharacters() {
+    public Queue<Character> getCharacters() {
 	return characters;
     }
 
     public Character getCharacter() {
-	return characters.removeFirst();
+	return characters.remove();
     }
 
     public Brick getBrick(int row, int col) {
@@ -70,7 +70,7 @@ public class Board
     }
 
     public void addCharacter(Character hero){
-        characters.addLast(hero);
+        characters.add(hero);
         notifyListeners();
     }
 
@@ -85,8 +85,12 @@ public class Board
 	bricks[0][width-1] = maker.createBrick(BrickType.START);
 	bricks[height-1][0] = maker.createBrick(BrickType.START);
 	bricks[height-1][width-1] = maker.createBrick(BrickType.START);
-	bricks[height/2][width/2] = maker.createBrick(BrickType.TREASUREBOT);
-	bricks[height/2-1][width/2] = maker.createBrick(BrickType.TREASURETOP);
+	bricks[height/2][width/2] = maker.createBrick(BrickType.TREASURE);
+	Brick brick = maker.createBrick(BrickType.TREASURE);
+	brick = brick.rotateLeft();
+	brick = brick.rotateLeft();
+	brick.setTimesRotated(2);
+	bricks[height/2-1][width/2] = brick;
 
 	notifyListeners();
     }
