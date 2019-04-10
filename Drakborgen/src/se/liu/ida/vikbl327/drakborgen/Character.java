@@ -3,7 +3,8 @@ package se.liu.ida.vikbl327.drakborgen;
 import javax.swing.*;
 
 /**
- * Interface for all the different heroes that can be chosen to play as at the start of a game.
+ * Interface for all the different heroes that can be chosen to play as at the start of a game. In future implementations heroes
+ * will have specific abilities and therefore specific methods, hence the interface.
  */
 
 public interface Character

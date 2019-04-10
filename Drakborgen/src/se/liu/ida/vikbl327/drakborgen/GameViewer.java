@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -20,6 +19,7 @@ public class GameViewer
 
     private static final int BRICK_SIZE = 60;
     private static final int TEXT_SIZE = 18;
+    private static final int T12 = 12;
     private static final SquareType [] ACCEPTED_SQUARES = {SquareType.PATH, SquareType.UNDISCOVERED, SquareType.TREASURE};
     private static final BrickType [] EXCEPTIONBRICKS = {BrickType.TREASURE,BrickType.START};
 
@@ -268,17 +268,15 @@ public class GameViewer
 		}
 		break;
 	    case SPEARTRAP:
-
 	        Object [] plates = {"Vänstra plattan", "Mittersta plattan", "Högra plattan"};
 	        int correctPlate = rnd.nextInt(3);
 	        int platesPressed = 0;
-		int chosenPlate;
 	        String msg = "Så snart du kliver in i rummet börjar de spjutförsedda väggarna sluta sig om dig. " +
-			     "Du har dock en liten chans att överleva\n. På golvet ser du tre stenplattor; en av dessa " +
-			     "hejdar fällan och oskadliggör den, men du hinner bara trampa på två av plattorna." +
+			     "Du har dock en liten chans att överleva.\n På golvet ser du tre stenplattor; en av dessa " +
+			     "hejdar fällan och oskadliggör den, men du hinner bara trampa på två av plattorna.\n" +
 			     "Välj en platta att trampa på.";
 	        while (platesPressed < 2) {
-		    chosenPlate = JOptionPane.showOptionDialog(
+		    int chosenPlate = JOptionPane.showOptionDialog(
 		    	frame.getParent(), msg, card.toString(),
 			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 			null, plates, options[0]);
@@ -306,7 +304,7 @@ public class GameViewer
 			 card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 			null, options, options[0]);
 		if (choice == 0) {
-		    int r = rnd.nextInt(12) + 1;
+		    int r = rnd.nextInt(T12) + 1;
 		    eventlog.append("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getArmorFactor();
 		    if (damageTaken > 0) {
@@ -319,6 +317,25 @@ public class GameViewer
 			"Pilarna lyckas inte penetrera din rustning, du tar ingen skada");
 		}
 		break;
+	    case TROLLAMBUSH:
+		choice = JOptionPane.showOptionDialog(
+			frame.getParent(),
+			"Du blir överfallen av ett troll, du måste först slå T12-TF för att se" +
+			"hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss", card.toString(),
+			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+		if (choice == 0) {
+		    int r = rnd.nextInt(T12) + 1;
+		    eventlog.append("Tärningen visar: " + r + "\n");
+		    int damageTaken = r - currentHero.getLuckFactor();
+		    if (damageTaken > 0) {
+		        currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
+		        JOptionPane.showMessageDialog(
+		        	frame.getParent(),
+				"Skelettet hugger dig och du tar " + damageTaken + " skada");
+		    }
+		    else JOptionPane.showMessageDialog(frame.getParent(), "Skelettets hugg missar dig");
+		}
+		break;
 	    case SKELETONAMBUSH:
 		choice = JOptionPane.showOptionDialog(
 			frame.getParent(),
@@ -326,7 +343,7 @@ public class GameViewer
 			"hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss", card.toString(),
 			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 		if (choice == 0) {
-		    int r = rnd.nextInt(12) + 1;
+		    int r = rnd.nextInt(T12) + 1;
 		    eventlog.append("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getLuckFactor();
 		    if (damageTaken > 0) {
@@ -340,6 +357,28 @@ public class GameViewer
 		    }
 		}
 		break;
+	    case ORCAMBUSH:
+		choice = JOptionPane.showOptionDialog(
+			frame.getParent(),
+			"Du blir överfallen av en orch, du måste först slå T12-TF för att se" +
+			"hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss", card.toString(),
+			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+		if (choice == 0) {
+		    int r = rnd.nextInt(T12) + 1;
+		    eventlog.append("Tärningen visar: " + r + "\n");
+		    int damageTaken = r - currentHero.getLuckFactor();
+		    if (damageTaken > 0) {
+		        currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
+		        JOptionPane.showMessageDialog(
+		        	frame.getParent(),
+				"Orchen hugger dig och du tar " + damageTaken + " skada");
+		    }
+		    else {
+		        JOptionPane.showMessageDialog(frame.getParent(), "Orchens hugg missar dig");
+		    }
+		}
+		break;
+
 	    default:
 		JOptionPane.showInternalMessageDialog(frame.getParent(), card.toString(), "Rumskort", JOptionPane.INFORMATION_MESSAGE);
 

@@ -38,7 +38,7 @@ public enum RoomCard
     },
     SARCOPHAGUS {
 	@Override public String toString() {
-	    return "Rummet innehåller en sarkofag\n";
+	    return "Rummet innehåller en kista\n";
 	}
     },
     ARROWTRAP {
@@ -66,7 +66,7 @@ public enum RoomCard
 	    return "Du blir överfallen av ett skelett!";
 	}
     },
-    ORCHAMBUSH {
+    ORCAMBUSH {
 	@Override public String toString() {
 	    return "Du blir överfallen av en orch";
 	}
