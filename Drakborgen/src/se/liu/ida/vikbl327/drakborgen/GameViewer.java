@@ -238,19 +238,19 @@ public class GameViewer
     private void handleRoomCard(RoomCard card) {
 	Random rnd = new Random();
 	final Object[] options = { "Slå tärning" };
-	int chosenPlate;
+	int choice;
 	switch (card) {
 	    case JEWELRY:
 		break;
 	    case ROOFFALL:
-		chosenPlate = JOptionPane.showOptionDialog(
+		choice = JOptionPane.showOptionDialog(
 			frame.getParent(),
 			"Taket över dig rasar, du måste slå med en 6-sidig tärning för att se om du överlever. " +
 			 "Om tärningen visar en 1:a dör du och kan inte forstätta spela Drakborgen",
 			 "Taket rasar!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 			 null, options, options[0]
 		);
-		if (chosenPlate == 0) {
+		if (choice == 0) {
 		    int r = rnd.nextInt(6) + 1;
 		    eventlog.append("Tärningen visar: " + r + "\n");
 		    if (r == 1) {
@@ -268,13 +268,11 @@ public class GameViewer
 		}
 		break;
 	    case SPEARTRAP:
-	        /*List<Object> plates = new ArrayList<>();
-	        plates.add("Vänstra plattan");
-	        plates.add("Mittersta plattan");
-	        plates.add("Högra plattan");*/
+
 	        Object [] plates = {"Vänstra plattan", "Mittersta plattan", "Högra plattan"};
 	        int correctPlate = rnd.nextInt(3);
 	        int platesPressed = 0;
+		int chosenPlate;
 	        String msg = "Så snart du kliver in i rummet börjar de spjutförsedda väggarna sluta sig om dig. " +
 			     "Du har dock en liten chans att överleva\n. På golvet ser du tre stenplattor; en av dessa " +
 			     "hejdar fällan och oskadliggör den, men du hinner bara trampa på två av plattorna." +
@@ -288,11 +286,9 @@ public class GameViewer
 			JOptionPane.showMessageDialog(frame.getParent(), "Du lyckas trampa på rätt platta och överlever");
 			break;
 		    } else {
-			//List<Object> remainingPlatesList = Arrays.asList(plates);
-			//remainingPlatesList.remove(o);
-			//Object[] tmp = { remainingPlatesList.get(0), remainingPlatesList.get(1) };
-			//plates = tmp;
+		        Object [] remainingPlates = {chosenPlate != 0 ? plates[0] : plates[1], chosenPlate == 1 ? plates[2] : plates[1]};
 			platesPressed++;
+			plates = remainingPlates;
 			msg = "Du valde fel bricka och har bara en chans till på dig att trampa på rätt platta";
 		    }
 		}
@@ -304,12 +300,12 @@ public class GameViewer
 		}
 		break;
 	    case ARROWTRAP:
-		chosenPlate = JOptionPane.showOptionDialog(
+		choice = JOptionPane.showOptionDialog(
 			frame.getParent(),
 			"Plötsligt börjar pilar skjutas ut från väggarna och du tar skador motsvarande T12 - RF",
 			 card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 			null, options, options[0]);
-		if (chosenPlate == 0) {
+		if (choice == 0) {
 		    int r = rnd.nextInt(12) + 1;
 		    eventlog.append("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getArmorFactor();
@@ -324,12 +320,12 @@ public class GameViewer
 		}
 		break;
 	    case SKELETONAMBUSH:
-		chosenPlate = JOptionPane.showOptionDialog(
+		choice = JOptionPane.showOptionDialog(
 			frame.getParent(),
 			"Du blir överfallen av ett skelett, du måste först slå T12-TF för att se" +
 			"hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss", card.toString(),
 			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-		if (chosenPlate == 0) {
+		if (choice == 0) {
 		    int r = rnd.nextInt(12) + 1;
 		    eventlog.append("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getLuckFactor();
