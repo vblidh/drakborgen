@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -67,7 +68,7 @@ public class GameViewer
 
 	final JMenuBar menuBar = new JMenuBar();
 	final JMenu file = new JMenu("File");
-	Color backGround = new Color(92, 62, 10);
+
 	JMenuItem quit = new JMenuItem("Quit");
 	file.add(quit);
 	quit.addActionListener(new QuitAction());
@@ -79,6 +80,7 @@ public class GameViewer
 
 
 	JPanel panel = new JPanel();
+	Color backGround = new Color(92, 62, 10);
 	panel.setBackground(backGround);
 	panel.add(currentHeroInfo);
 	panel.add(brickButton);
@@ -236,59 +238,106 @@ public class GameViewer
     private void handleRoomCard(RoomCard card) {
 	Random rnd = new Random();
 	final Object[] options = { "Slå tärning" };
-	int o;
+	int chosenPlate;
 	switch (card) {
 	    case JEWELRY:
 		break;
 	    case ROOFFALL:
-		o = JOptionPane.showOptionDialog(frame.getParent(),
-						 "Taket över dig rasar, du måste slå med en 6-sidig tärning för att se om du överlever. " +
-						 "Om tärningen visar en 1:a dör du och kan inte forstätta spela Drakborgen",
-						 "Taket rasar!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-						 null, options, options[0]);
-		if (o == 0) {
+		chosenPlate = JOptionPane.showOptionDialog(
+			frame.getParent(),
+			"Taket över dig rasar, du måste slå med en 6-sidig tärning för att se om du överlever. " +
+			 "Om tärningen visar en 1:a dör du och kan inte forstätta spela Drakborgen",
+			 "Taket rasar!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+			 null, options, options[0]
+		);
+		if (chosenPlate == 0) {
 		    int r = rnd.nextInt(6) + 1;
 		    eventlog.append("Tärningen visar: " + r + "\n");
 		    if (r == 1) {
-			JOptionPane.showMessageDialog(frame.getParent(),
-						      "Taket rasar ner över dig och du dör" + "omedelbart. Du har förlorat");
+			JOptionPane.showMessageDialog(
+				frame.getParent(),
+				"Taket rasar ner över dig och du dör" + "omedelbart. Du har förlorat"
+			);
 			currentHero.setCurrentHealth(0);
 		    } else {
-			JOptionPane
-				.showMessageDialog(frame.getParent(), "Du lyckas undvika raset, och kan forsätta ditt äventyr");
+			JOptionPane.showMessageDialog(
+				frame.getParent(),
+				"Du lyckas undvika raset, och kan forsätta ditt äventyr"
+			);
 		    }
 		}
 		break;
+	    case SPEARTRAP:
+	        /*List<Object> plates = new ArrayList<>();
+	        plates.add("Vänstra plattan");
+	        plates.add("Mittersta plattan");
+	        plates.add("Högra plattan");*/
+	        Object [] plates = {"Vänstra plattan", "Mittersta plattan", "Högra plattan"};
+	        int correctPlate = rnd.nextInt(3);
+	        int platesPressed = 0;
+	        String msg = "Så snart du kliver in i rummet börjar de spjutförsedda väggarna sluta sig om dig. " +
+			     "Du har dock en liten chans att överleva\n. På golvet ser du tre stenplattor; en av dessa " +
+			     "hejdar fällan och oskadliggör den, men du hinner bara trampa på två av plattorna." +
+			     "Välj en platta att trampa på.";
+	        while (platesPressed < 2) {
+		    chosenPlate = JOptionPane.showOptionDialog(
+		    	frame.getParent(), msg, card.toString(),
+			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+			null, plates, options[0]);
+		    if (chosenPlate == correctPlate) {
+			JOptionPane.showMessageDialog(frame.getParent(), "Du lyckas trampa på rätt platta och överlever");
+			break;
+		    } else {
+			//List<Object> remainingPlatesList = Arrays.asList(plates);
+			//remainingPlatesList.remove(o);
+			//Object[] tmp = { remainingPlatesList.get(0), remainingPlatesList.get(1) };
+			//plates = tmp;
+			platesPressed++;
+			msg = "Du valde fel bricka och har bara en chans till på dig att trampa på rätt platta";
+		    }
+		}
+	        if (platesPressed == 2) {
+		    JOptionPane.showMessageDialog(
+		    	frame.getParent(),
+			"Du valde återigen fel platta att trampa på, väggarna sluts omkring dig och ditt äventyr är över");
+		    currentHero.setCurrentHealth(0);
+		}
+		break;
 	    case ARROWTRAP:
-		o = JOptionPane.showOptionDialog(frame.getParent(),
-						 "Plötsligt börjar pilar skjutas ut från väggarna och du tar skador motsvarande T12 - din RF",
-						 card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-						 null, options, options[0]);
-		if (o == 0) {
+		chosenPlate = JOptionPane.showOptionDialog(
+			frame.getParent(),
+			"Plötsligt börjar pilar skjutas ut från väggarna och du tar skador motsvarande T12 - RF",
+			 card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+			null, options, options[0]);
+		if (chosenPlate == 0) {
 		    int r = rnd.nextInt(12) + 1;
 		    eventlog.append("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getArmorFactor();
 		    if (damageTaken > 0) {
 			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
-			JOptionPane.showMessageDialog(frame.getParent(),
-						      "Pilarna penetrerar din rustning och du tar " + damageTaken + " skada");
-		    } else JOptionPane.showMessageDialog(frame.getParent(),
-							 "Pilarna lyckas inte penetrera din rustning, du tar ingen skada");
+			JOptionPane.showMessageDialog(
+				frame.getParent(),
+				"Pilarna penetrerar din rustning och du tar " + damageTaken + " skada");
+		    } else JOptionPane.showMessageDialog(
+		    	frame.getParent(),
+			"Pilarna lyckas inte penetrera din rustning, du tar ingen skada");
 		}
 		break;
 	    case SKELETONAMBUSH:
-		o = JOptionPane.showOptionDialog(frame.getParent(),
-						 "Du blir överfallen av ett skelett, du måste först slå T12-TF för att se" +
-						 "hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss", card.toString(),
-						 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-		if (o == 0) {
+		chosenPlate = JOptionPane.showOptionDialog(
+			frame.getParent(),
+			"Du blir överfallen av ett skelett, du måste först slå T12-TF för att se" +
+			"hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss", card.toString(),
+			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+		if (chosenPlate == 0) {
 		    int r = rnd.nextInt(12) + 1;
 		    eventlog.append("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getLuckFactor();
 		    if (damageTaken > 0) {
 			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
-			JOptionPane.showMessageDialog(frame.getParent(),
-						      "Skelettet hugger dig och du tar " + damageTaken + " skada");
+			JOptionPane.showMessageDialog(
+				frame.getParent(),
+				"Skelettet hugger dig och du tar " + damageTaken + " skada");
 
 		    } else {
 			JOptionPane.showMessageDialog(frame.getParent(), "Skelettets hugg missar dig");

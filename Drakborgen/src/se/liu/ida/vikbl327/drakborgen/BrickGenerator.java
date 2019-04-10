@@ -20,7 +20,6 @@ public class BrickGenerator
 
     public BrickGenerator() {
 	rnd = new Random();
-
 	bricks = new ArrayList<>();
 	initializeBrickList();
     }
