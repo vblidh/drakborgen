@@ -11,11 +11,13 @@ import javax.swing.*;
 public class Sigier implements Character
 {
     private static final String NAME = "Sigier Skarpyxe";
+    private static final Object[] attackOptions = {"Attack A", "Attack B \n  (dubbel skada)", "Attack C"};
     private static final int HEALTH_POINTS = 16;
     private static final int STRENGTH_FACTOR = 7;
     private static final int AGILITY_FACTOR = 5;
     private static final int ARMOR_FACTOR = 6;
     private static final int LUCK_FACTOR = 5;
+    private static final int DOUBLE_DAMAGE_ATTACK = 1;
 
     private static final double SCALE_X = 0.13;
     private static final double SCALE_Y = 0.1;
@@ -42,6 +44,14 @@ public class Sigier implements Character
 
     public String getName() {
 	return NAME;
+    }
+
+    public Object[] getAttackOptions() {
+	return attackOptions;
+    }
+
+    public int getDoubleDamageAttack() {
+	return DOUBLE_DAMAGE_ATTACK;
     }
 
     public int getHealthPoints() {

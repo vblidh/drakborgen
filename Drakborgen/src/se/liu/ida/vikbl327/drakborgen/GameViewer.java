@@ -20,6 +20,7 @@ public class GameViewer
     private static final int BRICK_SIZE = 60;
     private static final int TEXT_SIZE = 18;
     private static final int T12 = 12;
+    private static final int [] JEWELRYVALUES = {50,100,150,200,250};
     private static final SquareType [] ACCEPTED_SQUARES = {SquareType.PATH, SquareType.UNDISCOVERED, SquareType.TREASURE};
     private static final BrickType [] EXCEPTIONBRICKS = {BrickType.TREASURE,BrickType.START};
 
@@ -36,14 +37,16 @@ public class GameViewer
     private MouseInputAdapter mouseAdapter;
     private boolean movedWithinTreasureRoom;
 
+    private List<Player> players;
     private List<Action> allowedActions;
 
     private Point highLightedBrick;
     private int numberOfPlayers;
     private int currentPlayer;
 
-    public GameViewer(final Board gameBoard) {
+    public GameViewer(final Board gameBoard, final List<Player> players) {
 	this.gameBoard = gameBoard;
+	this.players = players;
 	this.frame = new JFrame("Drakborgen");
 	this.comp = new GameComponent(gameBoard);
 	gameBoard.addBoardListener(comp);
@@ -53,12 +56,12 @@ public class GameViewer
 	this.cgenerator = new CardGenerator();
 	this.highLightedBrick = null;
 	Character hero = gameBoard.getCharacter();
-	this.currentHero = hero;
+	this.currentHero = players.get(0).getHero();
 	this.allowedActions = new ArrayList<>();
 	this.allowedActions.add(Action.MOVEHERO);
 	gameBoard.addCharacter(hero);
-	this.numberOfPlayers = gameBoard.getCharacters().size();
-	this.currentPlayer = 1;
+	this.numberOfPlayers = players.size() - 1;
+	this.currentPlayer = 0;
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	double width = screenSize.getWidth();
@@ -95,7 +98,6 @@ public class GameViewer
 	frame.setJMenuBar(menuBar);
 	frame.pack();
 	frame.setVisible(true);
-
 
     }
 
@@ -176,29 +178,41 @@ public class GameViewer
 
     }
 
-    public BrickType drawBrick() throws BadLocationException {
-
-	if (eventlog.getLineCount() > 4) {
-	    int end = eventlog.getLineEndOffset(0);
-	    eventlog.replaceRange("", 0, end);
+    private void addTextToEventLog(String text) {
+        try {
+	    if (eventlog.getLineCount() > 7) {
+		int end = eventlog.getLineEndOffset(0);
+		eventlog.replaceRange("", 0, end);
+	    }
 	}
-        BrickType type = bgenerator.generateBrick();
-        eventlog.append(type + " bricka placerad \n");
+        catch (BadLocationException e) {
+	    System.out.println(e.getMessage());
+	}
+	eventlog.append(text);
+    }
+
+    public BrickType drawBrick()  {
+	BrickType type = bgenerator.generateBrick();
+	addTextToEventLog(type + " bricka placerad \n");
         return type;
     }
 
-    public void updateHeroInfo(){
+    private void updateHeroInfo(){
         if (currentHero != null) {
-	    currentHeroInfo.setText("Hjälte: " + currentHero.getName() +"\n" +
-				   "Styrka (SF)  : " + currentHero.getStrengthFactor() + "\n" +
-				   "Vighet (VF)  : " + currentHero.getAgilityFactor() + "\n" +
-				   "Rustning (RF): " + currentHero.getArmorFactor() + "\n" +
-				   "Tur (TF):    : " + currentHero.getLuckFactor() + "\n" +
-				   "Kroppspoäng  : " + currentHero.getCurrentHealth() +"/" + currentHero.getHealthPoints());
+	    currentHeroInfo.setText(
+	    	"Spelare: " + players.get(currentPlayer).getName() + "\n" +
+	    	"Hjälte: " + currentHero.getName() +"\n" +
+		"Styrka (SF)  : " + currentHero.getStrengthFactor() + "\n" +
+		"Vighet (VF)  : " + currentHero.getAgilityFactor() + "\n" +
+		"Rustning (RF): " + currentHero.getArmorFactor() + "\n" +
+		"Tur (TF):    : " + currentHero.getLuckFactor() + "\n" +
+		"Kroppspoäng  : " + currentHero.getCurrentHealth() +"/" + currentHero.getHealthPoints() + "\n" +
+	    	"Värde av skatter: " + players.get(currentPlayer).getTreasures()
+	    );
         }
     }
 
-    public Direction decideDirection(int row, int col){
+    private Direction decideDirection(int row, int col){
 	if (row >= gameBoard.getHeight() || col >= gameBoard.getWidth())
 	    return Direction.INVALID;
         int heroyPos = currentHero.getyPos();
@@ -220,20 +234,86 @@ public class GameViewer
         else return Direction.INVALID;
     }
 
+    private boolean checkHeroHealth(){
+        if (currentHero.getCurrentHealth() <= 0) {
+            currentHero.setCurrentHealth(0);
+            players.get(currentPlayer).kill();
+            return false;
+	}
+        else return true;
+    }
+
     private void advanceTurn(){
 	allowedActions.clear();
 	allowedActions.add(Action.MOVEHERO);
-	Character hero = gameBoard.getCharacter();
-	currentHero = hero;
-	gameBoard.addCharacter(hero);
-	updateHeroInfo();
-	if  (currentPlayer == numberOfPlayers) {
-	    comp.decrementSunTimer();
-	    currentPlayer = 1;
-	    //JOptionPane.showInternalMessageDialog(frame.getParent(), "En runda har passerat!");
+
+	int alivePlayers = 0;
+	for (Player player: players) {
+	    if (player.isAlive()) alivePlayers++;
 	}
-	else currentPlayer++;
+	if (alivePlayers == 0) {
+	    //TODO: Add ending to game.
+	    eventlog.setText("Alla spelare döda");
+	    allowedActions.clear();
+	    return;
+	}
+
+	do {
+	    if (currentPlayer == numberOfPlayers) {
+		comp.decrementSunTimer();
+		currentPlayer = 0;
+	    } else currentPlayer++;
+	} while (!(players.get(currentPlayer).isAlive()));
+
+	currentHero = players.get(currentPlayer).getHero();
+	updateHeroInfo();
     }
+    private void openChest(Random rnd, Object[] diceOption){
+        ChestCard card = cgenerator.drawChestCard();
+        switch (card){
+	    case EMPTY:
+		JOptionPane.showMessageDialog(
+			frame.getParent(),
+			"Kistan är tom"
+		);
+		break;
+	    case JEWELRY:
+		int jewelryValue = JEWELRYVALUES[rnd.nextInt(5)];
+		JOptionPane.showMessageDialog(
+			frame.getParent(),
+			"Kistan innehåller ett smycke värt " + jewelryValue + " guldmynt"
+		);
+		players.get(currentPlayer).addTreasure(jewelryValue);
+		break;
+	    case TRAP:
+		int choice = JOptionPane.showOptionDialog(
+					frame.getParent(),
+					"När du öppnar kistan aktiveras en fälla och du måste omedelbart slå T12-3-TF " +
+					"för att se hur mycket skada du tar",
+					 "Taket rasar!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					 null,diceOption , diceOption[0]
+		);
+		if (choice==0){
+		    int r = rnd.nextInt(T12)+1;
+		    addTextToEventLog("Tärningen visar: " + r + "\n");
+		    int damageTaken = r-3-currentHero.getLuckFactor();
+		    if (damageTaken > 0) {
+			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
+			JOptionPane.showMessageDialog(
+				frame.getParent(),
+				"Du lyckas inte undvika fällan utan tar " + damageTaken + " skada");
+			checkHeroHealth();
+		    }
+		    else {
+			JOptionPane.showMessageDialog(
+				frame.getParent(),
+				"Turligt nog missar fällan dina händer och du tar ingen skada");
+		    }
+		}
+	}
+    }
+
+
 
     private void handleRoomCard(RoomCard card) {
 	Random rnd = new Random();
@@ -241,6 +321,27 @@ public class GameViewer
 	int choice;
 	switch (card) {
 	    case JEWELRY:
+	        int jewelryValue = JEWELRYVALUES[rnd.nextInt(5)];
+		JOptionPane.showInternalMessageDialog(
+			frame.getParent(),
+			"Du hittar ett smycke värt " + jewelryValue + " guldmynt",
+			card.toString(), JOptionPane.INFORMATION_MESSAGE
+		);
+		players.get(currentPlayer).addTreasure(jewelryValue);
+		break;
+
+	    case SARCOPHAGUS:
+	    	final Object[] chestOptions = {"Öppna kistan", "Ignorera kistan"};
+		choice = JOptionPane.showOptionDialog(
+					frame.getParent(),
+					card +  "Vill du öpnna den?",
+					 "Kista", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+					 null, chestOptions, null
+		);
+		if (choice == 0){
+		    openChest(rnd, options);
+		}
+
 		break;
 	    case ROOFFALL:
 		choice = JOptionPane.showOptionDialog(
@@ -252,13 +353,14 @@ public class GameViewer
 		);
 		if (choice == 0) {
 		    int r = rnd.nextInt(6) + 1;
-		    eventlog.append("Tärningen visar: " + r + "\n");
+		    addTextToEventLog("Tärningen visar: " + r + "\n");
 		    if (r == 1) {
 			JOptionPane.showMessageDialog(
 				frame.getParent(),
-				"Taket rasar ner över dig och du dör" + "omedelbart. Du har förlorat"
+				"Taket rasar ner över dig och du dör omedelbart. Du har förlorat"
 			);
 			currentHero.setCurrentHealth(0);
+			players.get(currentPlayer).kill();
 		    } else {
 			JOptionPane.showMessageDialog(
 				frame.getParent(),
@@ -267,19 +369,20 @@ public class GameViewer
 		    }
 		}
 		break;
+
 	    case SPEARTRAP:
 	        Object [] plates = {"Vänstra plattan", "Mittersta plattan", "Högra plattan"};
 	        int correctPlate = rnd.nextInt(3);
 	        int platesPressed = 0;
 	        String msg = "Så snart du kliver in i rummet börjar de spjutförsedda väggarna sluta sig om dig. " +
-			     "Du har dock en liten chans att överleva.\n På golvet ser du tre stenplattor; en av dessa " +
+			     "Du har dock en liten chans att överleva.\nPå golvet ser du tre stenplattor; en av dessa " +
 			     "hejdar fällan och oskadliggör den, men du hinner bara trampa på två av plattorna.\n" +
-			     "Välj en platta att trampa på.";
+			     "			    Välj en platta att trampa på.";
 	        while (platesPressed < 2) {
 		    int chosenPlate = JOptionPane.showOptionDialog(
 		    	frame.getParent(), msg, card.toString(),
 			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-			null, plates, options[0]);
+			null, plates, null);
 		    if (chosenPlate == correctPlate) {
 			JOptionPane.showMessageDialog(frame.getParent(), "Du lyckas trampa på rätt platta och överlever");
 			break;
@@ -295,8 +398,10 @@ public class GameViewer
 		    	frame.getParent(),
 			"Du valde återigen fel platta att trampa på, väggarna sluts omkring dig och ditt äventyr är över");
 		    currentHero.setCurrentHealth(0);
+		    players.get(currentPlayer).kill();
 		}
 		break;
+
 	    case ARROWTRAP:
 		choice = JOptionPane.showOptionDialog(
 			frame.getParent(),
@@ -305,18 +410,20 @@ public class GameViewer
 			null, options, options[0]);
 		if (choice == 0) {
 		    int r = rnd.nextInt(T12) + 1;
-		    eventlog.append("Tärningen visar: " + r + "\n");
+		    addTextToEventLog("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getArmorFactor();
 		    if (damageTaken > 0) {
 			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
 			JOptionPane.showMessageDialog(
 				frame.getParent(),
 				"Pilarna penetrerar din rustning och du tar " + damageTaken + " skada");
+			checkHeroHealth();
 		    } else JOptionPane.showMessageDialog(
 		    	frame.getParent(),
 			"Pilarna lyckas inte penetrera din rustning, du tar ingen skada");
 		}
 		break;
+
 	    case TROLLAMBUSH:
 		choice = JOptionPane.showOptionDialog(
 			frame.getParent(),
@@ -325,17 +432,19 @@ public class GameViewer
 			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 		if (choice == 0) {
 		    int r = rnd.nextInt(T12) + 1;
-		    eventlog.append("Tärningen visar: " + r + "\n");
+		    addTextToEventLog("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getLuckFactor();
 		    if (damageTaken > 0) {
 		        currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
 		        JOptionPane.showMessageDialog(
 		        	frame.getParent(),
-				"Skelettet hugger dig och du tar " + damageTaken + " skada");
+				"Trollet hugger dig och du tar " + damageTaken + " skada");
+			if (checkHeroHealth()) battleWithMonster(card,rnd);
 		    }
-		    else JOptionPane.showMessageDialog(frame.getParent(), "Skelettets hugg missar dig");
+		    else JOptionPane.showMessageDialog(frame.getParent(), "Trollets hugg missar dig");
 		}
 		break;
+
 	    case SKELETONAMBUSH:
 		choice = JOptionPane.showOptionDialog(
 			frame.getParent(),
@@ -344,19 +453,21 @@ public class GameViewer
 			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 		if (choice == 0) {
 		    int r = rnd.nextInt(T12) + 1;
-		    eventlog.append("Tärningen visar: " + r + "\n");
+		    addTextToEventLog("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getLuckFactor();
 		    if (damageTaken > 0) {
 			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
 			JOptionPane.showMessageDialog(
 				frame.getParent(),
 				"Skelettet hugger dig och du tar " + damageTaken + " skada");
+			if (checkHeroHealth()) battleWithMonster(card,rnd);
 
 		    } else {
 			JOptionPane.showMessageDialog(frame.getParent(), "Skelettets hugg missar dig");
 		    }
 		}
 		break;
+
 	    case ORCAMBUSH:
 		choice = JOptionPane.showOptionDialog(
 			frame.getParent(),
@@ -365,13 +476,15 @@ public class GameViewer
 			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 		if (choice == 0) {
 		    int r = rnd.nextInt(T12) + 1;
-		    eventlog.append("Tärningen visar: " + r + "\n");
+		    addTextToEventLog("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getLuckFactor();
 		    if (damageTaken > 0) {
 		        currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
 		        JOptionPane.showMessageDialog(
 		        	frame.getParent(),
 				"Orchen hugger dig och du tar " + damageTaken + " skada");
+		        if (checkHeroHealth())
+		        battleWithMonster(card,rnd);
 		    }
 		    else {
 		        JOptionPane.showMessageDialog(frame.getParent(), "Orchens hugg missar dig");
@@ -379,75 +492,141 @@ public class GameViewer
 		}
 		break;
 
-	    default:
+	    case EMPTY:
 		JOptionPane.showInternalMessageDialog(frame.getParent(), card.toString(), "Rumskort", JOptionPane.INFORMATION_MESSAGE);
+		break;
 
+	    default:
+		JOptionPane.showInternalMessageDialog(frame.getParent(), "Du stöter på " + card + " och går till attack!",
+						      "Rumskort", JOptionPane.INFORMATION_MESSAGE);
+	        battleWithMonster(card, rnd);
+	}
+    }
+
+    private void battleWithMonster(RoomCard card, Random rnd) {
+	int [] monsterStats = decideMonsterAction(card, rnd);
+	boolean monsterFlees = (monsterStats[0]==0);
+
+        if (monsterFlees) {
+		JOptionPane.showMessageDialog(frame.getParent(), "Monstret flyr");
+        }
+        else {
+	    int monsterHealth = monsterStats[1];
+	    JOptionPane.showMessageDialog(frame.getParent(), "Monstret möter din attack!");
+            while (monsterHealth > 0){
+		int choice = JOptionPane.showOptionDialog(
+			frame.getParent(),
+			"Du och monstret väljer en varsin attack. Reglerna som gäller är:\n 	A slår B, B slår C, C slår A",
+			"Strid med " + card + "!",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+			null, currentHero.getAttackOptions(), null
+		);
+		Attack monsterAttack = Attack.values()[rnd.nextInt(3)];
+		Attack heroAttack = Attack.values()[choice];
+
+		if (heroAttack.beats(monsterAttack)) {
+		    int damageDone = choice == currentHero.getDoubleDamageAttack() ? 2 : 1;
+		    addTextToEventLog("Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
+				      "Din attack träffade och du gjorde " + damageDone + " skada\n");
+		    monsterHealth -= damageDone;
+		}
+		else if (monsterAttack.beats(heroAttack)){
+		    addTextToEventLog("Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
+				      "Monstrets attack träffade och gjorde " + 1 + " skada\n");
+		    currentHero.setCurrentHealth(currentHero.getCurrentHealth()-1);
+		}
+		else {
+		    addTextToEventLog("Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
+				      "Båda attacker träffade och gjorde " + 1 + " skada till vardera\n");
+		    currentHero.setCurrentHealth(currentHero.getCurrentHealth()-1);
+		    monsterHealth--;
+		}
+		if (!checkHeroHealth()) break;
+		comp.repaint();
+	    }
+	    JOptionPane.showInternalMessageDialog(frame.getParent(), "Monstret dog och du pustar ut. Din runda är över",
+						  "Strid över", JOptionPane.INFORMATION_MESSAGE);
+	}
+    }
+
+    private int[] decideMonsterAction(RoomCard card, Random rnd) {
+	int escapeFactor = rnd.nextInt(T12);
+	switch (card) {
+	    case GOBLIN:
+		return escapeFactor < 3 ? new int[] { 1, rnd.nextInt(3) + 1 } : new int[] { 0, 0 };
+	    case TROLL:
+		return escapeFactor < 5 ? new int[] { 1, rnd.nextInt(4) + 1 } : new int[] { 0, 0 };
+	    case SKELETON:
+		return escapeFactor < 8 ? new int[] { 1, rnd.nextInt(4) + 2 } : new int[] { 0, 0 };
+	    case ORC:
+		return escapeFactor < 8 ? new int[] { 1, rnd.nextInt(3) + 3 } : new int[] { 0, 0 };
+	    case TWOORCS:
+		return escapeFactor < 9 ? new int[] { 1, rnd.nextInt(4) + 3 } : new int[] { 0, 0 };
+	    case TROLLAMBUSH:
+		return new int[] { 1, rnd.nextInt(4 + 1)};
+	    case SKELETONAMBUSH:
+		return new int[] { 1, rnd.nextInt(4) + 2 };
+	    case ORCAMBUSH:
+		return new int[] { 1, rnd.nextInt(3) + 3 };
+	    default:
+		return new int[] { 0, 0 };
 	}
     }
 
 
-    private class QuitAction extends AbstractAction
-    {
-	@Override public void actionPerformed(final ActionEvent e) {
+	private class QuitAction extends AbstractAction
+	{
+	    @Override public void actionPerformed(final ActionEvent e) {
 	    /*if (JOptionPane.showConfirmDialog(null, "Vill du avsluta spelet?", "Avslutar Drakborgen", JOptionPane.YES_NO_OPTION) ==
 		JOptionPane.YES_OPTION) {
 
 
 	    }*/
-	    System.exit(0);
-	}
-    }
-
-    private class DrawBrickAction extends AbstractAction
-    {
-        @Override public void actionPerformed(final ActionEvent e){
-            if (highLightedBrick == null) {
-                eventlog.setText("Du måste välja vart du vill förflytta dig\n");
-                return;
+		System.exit(0);
 	    }
-            int row = highLightedBrick.y;
-            int col= highLightedBrick.x;
-	    if (gameBoard.getBrick(row,col).getType() == BrickType.UNDISCOVERED){
-		try {
+	}
+
+	private class DrawBrickAction extends AbstractAction
+	{
+	    @Override public void actionPerformed(final ActionEvent e) {
+		if (highLightedBrick == null) {
+		    eventlog.setText("Du måste välja vart du vill förflytta dig\n");
+		    return;
+		}
+		int row = highLightedBrick.y;
+		int col = highLightedBrick.x;
+		if (gameBoard.getBrick(row, col).getType() == BrickType.UNDISCOVERED) {
 		    BrickType type = drawBrick();
-		    gameBoard.placeBrick(row, col, type, decideDirection(row,col));
+		    gameBoard.placeBrick(row, col, type, decideDirection(row, col));
 		    currentHero.setyPos(row);
 		    currentHero.setxPos(col);
-	    }
-		catch (BadLocationException ex) {
-		    JOptionPane.showInternalMessageDialog(frame.getParent(), ex.getMessage());
+		} else {
+		    if (gameBoard.getBrick(row, col).getType().equals(BrickType.TREASURE) &&
+			gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType().equals(BrickType.TREASURE)) {
+			movedWithinTreasureRoom = true;
+		    }
+		    gameBoard.removeHighLight(row, col);
+		    currentHero.setyPos(row);
+		    currentHero.setxPos(col);
+		    eventlog.setText("Flyttade till redan befintlig bricka \n");
 		}
+
+		highLightedBrick = null;
+		BrickType curBrick = gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType();
+		System.out.println(curBrick);
+
+		if (ArrayUtils.contains(EXCEPTIONBRICKS, curBrick) && !movedWithinTreasureRoom) {
+		    addTextToEventLog("Du behöver ej dra ett rumskort på den här rutan\n");
+		    advanceTurn();
+		} else if ((!movedWithinTreasureRoom)) {
+		    allowedActions.clear();
+		    allowedActions.add(Action.DRAWROOMCARD);
+		}
+
+
+		brickButton.setText("Dra rumsbricka");
+		movedWithinTreasureRoom = false;
 	    }
-	    else {
-	        if (gameBoard.getBrick(row,col).getType().equals(BrickType.TREASURE) &&
-		    gameBoard.getBrick(currentHero.getyPos(),currentHero.getxPos()).getType().equals(BrickType.TREASURE))
-		    movedWithinTreasureRoom = true;
-		gameBoard.removeHighLight(row,col);
-	        currentHero.setyPos(row);
-	        currentHero.setxPos(col);
-	        eventlog.setText("Flyttade till redan befintlig bricka \n");
-	    }
-
-	    highLightedBrick = null;
-	    BrickType curBrick = gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType();
-	    System.out.println(curBrick);
-
-	    if (ArrayUtils.contains(EXCEPTIONBRICKS, curBrick) && !movedWithinTreasureRoom) {
-		eventlog.append("Du behöver ej dra ett rumskort på den här rutan");
-		advanceTurn();
-	    }
-
-
-	    else if ((!movedWithinTreasureRoom)){
-		allowedActions.clear();
-		allowedActions.add(Action.DRAWROOMCARD);
-	    }
-
-
-	    brickButton.setText("Dra rumsbricka");
-	    movedWithinTreasureRoom = false;
-        }
-    }
+	}
 
     private class DrawRoomCardAction extends AbstractAction
     {
@@ -458,6 +637,7 @@ public class GameViewer
 	    }
 	    RoomCard card = cgenerator.drawRoomCard();
 	    allowedActions.clear();
+
 	    handleRoomCard(card);
 
 

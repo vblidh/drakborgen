@@ -4,6 +4,9 @@ import se.liu.ida.vikbl327.drakborgen.heroes.Sigier;
 
 import javax.swing.text.BadLocationException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.lang.Thread.sleep;
 
 public final class Game
@@ -14,13 +17,19 @@ public final class Game
     public static void main(String[] args) throws InterruptedException, BadLocationException {
 	Board board = new Board(10,13);
 	Character hero = new Sigier();
+	Player player1 = new Player("Balder", hero);
+
 	board.addCharacter(hero);
 	Character hero2 = new Sigier();
 	board.addCharacter(hero2);
+	Player player2 = new Player("Freja", hero2);
+	List<Player> players = new ArrayList<>();
+	players.add(player1);
+	players.add(player2);
 	hero2.setyPos(9);
 	hero2.setxPos(0);
 
-	GameViewer viewer = new GameViewer(board);
+	GameViewer viewer = new GameViewer(board, players);
 
 
 

@@ -11,6 +11,10 @@ public interface Character
 {
     public String getName();
 
+    public Object[] getAttackOptions();
+
+    public int getDoubleDamageAttack();
+
     public int getHealthPoints();
 
     public int getStrengthFactor();

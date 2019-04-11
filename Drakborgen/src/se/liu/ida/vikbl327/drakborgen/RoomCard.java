@@ -13,32 +13,32 @@ public enum RoomCard
     },
     GOBLIN {
 	@Override public String toString() {
-	    return "Du stöter på en svartalv i rummet!\n";
+	    return "en svartalv";
 	}
     },
     TROLL {
 	@Override public String toString() {
-	    return "Du stöter på ett bergstroll i rummet!\n";
+	    return "ett bergstroll";
 	}
     },
     SKELETON {
 	@Override public String toString() {
-	    return "Du stöter på ett skelett i rummet!\n";
+	    return "ett skelett";
 	}
     },
     ORC {
 	@Override public String toString() {
-	    return "Du stöter på en orch i rummet!\n";
+	    return "en orch";
 	}
     },
     TWOORCS {
 	@Override public String toString() {
-	    return "Du stöter på två orcher i rumemt!\n";
+	    return "två orcher";
 	}
     },
     SARCOPHAGUS {
 	@Override public String toString() {
-	    return "Rummet innehåller en kista\n";
+	    return "Rummet innehåller en kista. ";
 	}
     },
     ARROWTRAP {
@@ -73,7 +73,7 @@ public enum RoomCard
     },
     JEWELRY {
 	@Override public String toString() {
-	    return "Du fann ett smycke!";
+	    return "Smycke!";
 	}
     }
 }
