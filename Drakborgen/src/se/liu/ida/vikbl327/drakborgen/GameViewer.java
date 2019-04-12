@@ -89,6 +89,7 @@ public class GameViewer
 	panel.add(currentHeroInfo);
 	panel.add(brickButton);
 	panel.add(roomButton);
+	panel.add(treasureButton);
 	panel.add(eventlog);
 
 
@@ -622,10 +623,9 @@ public class GameViewer
 
 		if (ArrayUtils.contains(EXCEPTIONBRICKS, curBrick) && !movedWithinTreasureRoom) {
 		    addTextToEventLog("Du behöver ej dra ett rumskort på den här rutan\n");
-		    if (curBrick.equals(BrickType.TREASURE) && !allowedActions.contains(Action.DRAWTREASURECARD))
-		        allowedActions.add(Action.DRAWTREASURECARD);
 		    advanceTurn();
-		} else if ((!movedWithinTreasureRoom)) {
+		}
+		else if ((!movedWithinTreasureRoom)) {
 		    allowedActions.remove(Action.MOVEHERO);
 		    allowedActions.add(Action.DRAWROOMCARD);
 		}
@@ -664,11 +664,11 @@ public class GameViewer
 		for (int i = 0; i < 2; i++) {
 		    TreasureCard card = cgenerator.drawTreasureCard();
 		    int cardValue = card.getValue(rnd);
-		    JOptionPane.showInternalMessageDialog(frame.getParent(), card + "till ett värde av " + cardValue,
+		    JOptionPane.showInternalMessageDialog(frame.getParent(), card + " till ett värde av " + cardValue,
 							  "Skattkammarkort", JOptionPane.INFORMATION_MESSAGE);
 		    players.get(currentPlayer).addTreasure(cardValue);
 		}
-		allowedActions.remove(Action.DRAWTREASURECARD);
+		advanceTurn();
 	    }
 	    else {
 	        addTextToEventLog("Du kan bara dra skattkammarkort när du befinner dig i skattkammaren");
