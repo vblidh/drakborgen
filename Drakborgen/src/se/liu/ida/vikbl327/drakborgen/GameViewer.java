@@ -34,6 +34,7 @@ public class GameViewer
     private JTextArea currentHeroInfo;
     private JButton brickButton;
     private JButton roomButton;
+    private JButton treasureButton;
     private MouseInputAdapter mouseAdapter;
     private boolean movedWithinTreasureRoom;
 
@@ -169,12 +170,16 @@ public class GameViewer
 
 	this.brickButton = new JButton("Dra rumsbricka");
 	this.roomButton = new JButton("Dra rumskort");
+	this.treasureButton = new JButton("Dra skattkammarkort");
 	brickButton.setFont(new Font("Helvetica", Font.BOLD, TEXT_SIZE));
 	brickButton.setBackground(Color.WHITE);
 	brickButton.addActionListener(new DrawBrickAction());
 	roomButton.setFont(new Font("Helvetica", Font.BOLD, TEXT_SIZE));
 	roomButton.setBackground(Color.WHITE);
 	roomButton.addActionListener(new DrawRoomCardAction());
+	treasureButton.setFont(new Font("Helvetica", Font.BOLD, TEXT_SIZE));
+	treasureButton.setBackground(Color.WHITE);
+	treasureButton.addActionListener(new DrawTreasureCardAction());
 
     }
 
@@ -246,6 +251,7 @@ public class GameViewer
     private void advanceTurn(){
 	allowedActions.clear();
 	allowedActions.add(Action.MOVEHERO);
+	allowedActions.add(Action.DRAWTREASURECARD);
 
 	int alivePlayers = 0;
 	for (Player player: players) {
@@ -616,12 +622,13 @@ public class GameViewer
 
 		if (ArrayUtils.contains(EXCEPTIONBRICKS, curBrick) && !movedWithinTreasureRoom) {
 		    addTextToEventLog("Du behöver ej dra ett rumskort på den här rutan\n");
+		    if (curBrick.equals(BrickType.TREASURE) && !allowedActions.contains(Action.DRAWTREASURECARD))
+		        allowedActions.add(Action.DRAWTREASURECARD);
 		    advanceTurn();
 		} else if ((!movedWithinTreasureRoom)) {
-		    allowedActions.clear();
+		    allowedActions.remove(Action.MOVEHERO);
 		    allowedActions.add(Action.DRAWROOMCARD);
 		}
-
 
 		brickButton.setText("Dra rumsbricka");
 		movedWithinTreasureRoom = false;
@@ -636,7 +643,7 @@ public class GameViewer
 	        return;
 	    }
 	    RoomCard card = cgenerator.drawRoomCard();
-	    allowedActions.clear();
+	    allowedActions.remove(Action.DRAWROOMCARD);
 
 	    handleRoomCard(card);
 
@@ -644,6 +651,28 @@ public class GameViewer
 	    //TODO: Add event relative to the card drawn
 
 	    advanceTurn();
+	}
+    }
+
+    private class DrawTreasureCardAction extends AbstractAction
+    {
+	@Override public void actionPerformed(final ActionEvent actionEvent) {
+	    if (gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType().equals(BrickType.TREASURE)
+	    	&& allowedActions.contains(Action.DRAWTREASURECARD))
+	    {
+	        Random rnd = new Random();
+		for (int i = 0; i < 2; i++) {
+		    TreasureCard card = cgenerator.drawTreasureCard();
+		    int cardValue = card.getValue(rnd);
+		    JOptionPane.showInternalMessageDialog(frame.getParent(), card + "till ett värde av " + cardValue,
+							  "Skattkammarkort", JOptionPane.INFORMATION_MESSAGE);
+		    players.get(currentPlayer).addTreasure(cardValue);
+		}
+		allowedActions.remove(Action.DRAWTREASURECARD);
+	    }
+	    else {
+	        addTextToEventLog("Du kan bara dra skattkammarkort när du befinner dig i skattkammaren");
+	    }
 	}
     }
 }
