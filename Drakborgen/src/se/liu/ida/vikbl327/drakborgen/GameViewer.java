@@ -252,7 +252,6 @@ public class GameViewer
     private void advanceTurn(){
 	allowedActions.clear();
 	allowedActions.add(Action.MOVEHERO);
-	allowedActions.add(Action.DRAWTREASURECARD);
 
 	int alivePlayers = 0;
 	for (Player player: players) {
@@ -274,6 +273,9 @@ public class GameViewer
 
 	currentHero = players.get(currentPlayer).getHero();
 	updateHeroInfo();
+	if (gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType().equals(BrickType.TREASURE)) {
+	    allowedActions.add(Action.DRAWTREASURECARD);
+	}
     }
     private void openChest(Random rnd, Object[] diceOption){
         ChestCard card = cgenerator.drawChestCard();
@@ -294,11 +296,11 @@ public class GameViewer
 		break;
 	    case TRAP:
 		int choice = JOptionPane.showOptionDialog(
-					frame.getParent(),
-					"När du öppnar kistan aktiveras en fälla och du måste omedelbart slå T12-3-TF " +
-					"för att se hur mycket skada du tar",
-					 "Taket rasar!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-					 null,diceOption , diceOption[0]
+			frame.getParent(),
+			"När du öppnar kistan aktiveras en fälla och du måste omedelbart slå T12-3-TF " +
+			"för att se hur mycket skada du tar",
+			"Fälla!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+			null, diceOption , diceOption[0]
 		);
 		if (choice==0){
 		    int r = rnd.nextInt(T12)+1;
@@ -321,7 +323,6 @@ public class GameViewer
     }
 
 
-
     private void handleRoomCard(RoomCard card) {
 	Random rnd = new Random();
 	final Object[] options = { "Slå tärning" };
@@ -331,7 +332,7 @@ public class GameViewer
 	        int jewelryValue = JEWELRYVALUES[rnd.nextInt(5)];
 		JOptionPane.showInternalMessageDialog(
 			frame.getParent(),
-			"Du hittar ett smycke värt " + jewelryValue + " guldmynt",
+			"Rummet innehåller ett smycke värt " + jewelryValue + " guldmynt",
 			card.toString(), JOptionPane.INFORMATION_MESSAGE
 		);
 		players.get(currentPlayer).addTreasure(jewelryValue);
@@ -348,7 +349,6 @@ public class GameViewer
 		if (choice == 0){
 		    openChest(rnd, options);
 		}
-
 		break;
 	    case ROOFFALL:
 		choice = JOptionPane.showOptionDialog(
@@ -490,12 +490,13 @@ public class GameViewer
 		        JOptionPane.showMessageDialog(
 		        	frame.getParent(),
 				"Orchen hugger dig och du tar " + damageTaken + " skada");
-		        if (checkHeroHealth())
-		        battleWithMonster(card,rnd);
+
 		    }
 		    else {
 		        JOptionPane.showMessageDialog(frame.getParent(), "Orchens hugg missar dig");
 		    }
+		    if (checkHeroHealth())
+      			battleWithMonster(card,rnd);
 		}
 		break;
 
@@ -511,14 +512,13 @@ public class GameViewer
     }
 
     private void battleWithMonster(RoomCard card, Random rnd) {
-	int [] monsterStats = decideMonsterAction(card, rnd);
-	boolean monsterFlees = (monsterStats[0]==0);
+	int monsterHealth = decideMonsterAction(card, rnd);
+	boolean monsterFlees = (monsterHealth==0);
 
         if (monsterFlees) {
 		JOptionPane.showMessageDialog(frame.getParent(), "Monstret flyr");
         }
         else {
-	    int monsterHealth = monsterStats[1];
 	    JOptionPane.showMessageDialog(frame.getParent(), "Monstret möter din attack!");
             while (monsterHealth > 0){
 		int choice = JOptionPane.showOptionDialog(
@@ -555,27 +555,27 @@ public class GameViewer
 	}
     }
 
-    private int[] decideMonsterAction(RoomCard card, Random rnd) {
+    private int decideMonsterAction(RoomCard card, Random rnd) {
 	int escapeFactor = rnd.nextInt(T12);
 	switch (card) {
 	    case GOBLIN:
-		return escapeFactor < 3 ? new int[] { 1, rnd.nextInt(3) + 1 } : new int[] { 0, 0 };
+		return escapeFactor < 3 ? rnd.nextInt(3) + 1 : 0;
 	    case TROLL:
-		return escapeFactor < 5 ? new int[] { 1, rnd.nextInt(4) + 1 } : new int[] { 0, 0 };
+		return escapeFactor < 5 ?  rnd.nextInt(4) + 1 : 0;
 	    case SKELETON:
-		return escapeFactor < 8 ? new int[] { 1, rnd.nextInt(4) + 2 } : new int[] { 0, 0 };
+		return escapeFactor < 8 ? rnd.nextInt(4) + 2 : 0;
 	    case ORC:
-		return escapeFactor < 8 ? new int[] { 1, rnd.nextInt(3) + 3 } : new int[] { 0, 0 };
+		return escapeFactor < 8 ? rnd.nextInt(3) + 3 : 0;
 	    case TWOORCS:
-		return escapeFactor < 9 ? new int[] { 1, rnd.nextInt(4) + 3 } : new int[] { 0, 0 };
+		return escapeFactor < 9 ? rnd.nextInt(4) + 3 : 0;
 	    case TROLLAMBUSH:
-		return new int[] { 1, rnd.nextInt(4 + 1)};
+		return rnd.nextInt(4 + 1);
 	    case SKELETONAMBUSH:
-		return new int[] { 1, rnd.nextInt(4) + 2 };
+		return rnd.nextInt(4) + 2;
 	    case ORCAMBUSH:
-		return new int[] { 1, rnd.nextInt(3) + 3 };
+		return rnd.nextInt(3) + 3;
 	    default:
-		return new int[] { 0, 0 };
+		return 0;
 	}
     }
 
@@ -623,10 +623,15 @@ public class GameViewer
 
 		if (ArrayUtils.contains(EXCEPTIONBRICKS, curBrick) && !movedWithinTreasureRoom) {
 		    addTextToEventLog("Du behöver ej dra ett rumskort på den här rutan\n");
-		    advanceTurn();
+		    if (curBrick.equals(BrickType.TREASURE)) {
+		        allowedActions.add(Action.DRAWTREASURECARD);
+		        allowedActions.remove(Action.MOVEHERO);
+		    }
+		    else advanceTurn();
 		}
 		else if ((!movedWithinTreasureRoom)) {
 		    allowedActions.remove(Action.MOVEHERO);
+		    allowedActions.remove(Action.DRAWTREASURECARD);
 		    allowedActions.add(Action.DRAWROOMCARD);
 		}
 
@@ -647,9 +652,6 @@ public class GameViewer
 
 	    handleRoomCard(card);
 
-
-	    //TODO: Add event relative to the card drawn
-
 	    advanceTurn();
 	}
     }
@@ -664,8 +666,9 @@ public class GameViewer
 		for (int i = 0; i < 2; i++) {
 		    TreasureCard card = cgenerator.drawTreasureCard();
 		    int cardValue = card.getValue(rnd);
-		    JOptionPane.showInternalMessageDialog(frame.getParent(), card + " till ett värde av " + cardValue,
-							  "Skattkammarkort", JOptionPane.INFORMATION_MESSAGE);
+		    JOptionPane.showInternalMessageDialog(
+		    	frame.getParent(), card + " till ett värde av " + cardValue,
+			"Skattkammarkort", JOptionPane.INFORMATION_MESSAGE);
 		    players.get(currentPlayer).addTreasure(cardValue);
 		}
 		advanceTurn();

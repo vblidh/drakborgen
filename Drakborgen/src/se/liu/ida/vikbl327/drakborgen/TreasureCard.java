@@ -10,9 +10,6 @@ import java.util.Random;
 public enum TreasureCard
 {
 
-
-
-
     COINS {
         @Override
 	public int getValue(Random rnd) {
@@ -50,6 +47,32 @@ public enum TreasureCard
 
 	@Override public String toString() {
 	    return "Du hittade en guldkaraff";
+	}
+    },
+    GOLDCHAIN {
+	@Override public int getValue(final Random rnd) {
+	    return (rnd.nextInt(3) + 5)*100;
+	}
+
+	@Override public String toString() {
+	    return "Du hittade en guldkedja";
+	}
+    },
+    CROWN {
+	@Override public int getValue(final Random rnd) {
+	    return 4000;
+	}
+
+	@Override public String toString() {
+	    return "Du hittade en diamantbeströdd krona";
+	}
+    },
+    JADEFIGURINE {
+	@Override public int getValue(final Random rnd) {
+	    return 1500;
+	}
+	@Override public String toString() {
+	    return "Du hittade en jadefigur";
 	}
     },
     MOONSTONE {
