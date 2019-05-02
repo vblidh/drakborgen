@@ -19,13 +19,17 @@ import java.util.List;
 import java.util.Random;
 
 
+/**
+ * Main user interface class of the game. This class displays the game on a Jframe, and also handles actions upon pressing any
+ * of the buttons, or by clicking the mouse on the board. All user interaction such as combat, searching, looting etc.
+ * happens in this class.
+ */
 public class GameViewer
 {
 
     private static final int BRICK_SIZE = 60;
     private static final int TEXT_SIZE = 18;
     private static final int T12 = 12;
-    //private static final int[] JEWELRYVALUES = { 50, 100, 150, 200, 250 };
     private static final SquareType[] ACCEPTED_SQUARES = { SquareType.PATH, SquareType.UNDISCOVERED, SquareType.TREASURE };
     private static final BrickType[] EXCEPTIONBRICKS = { BrickType.TREASURE, BrickType.START };
 
@@ -49,7 +53,6 @@ public class GameViewer
     private List<Action> allowedActions;
 
     private Point highLightedBrick;
-    private int numberOfPlayers;
     private Player currentPlayer;
     private int currentPlayerIndex;
     private int sleepingDragonFactor;
@@ -65,14 +68,11 @@ public class GameViewer
 	this.bgenerator = new BrickGenerator();
 	this.cgenerator = new CardGenerator();
 	this.highLightedBrick = null;
-	Character hero = gameBoard.getCharacter();
-	this.currentHero = players.get(0).getHero();
 	this.allowedActions = new ArrayList<>();
 	this.allowedActions.add(Action.MOVEHERO);
-	gameBoard.addCharacter(hero);
-	this.numberOfPlayers = players.size() - 1;
 	this.currentPlayerIndex = 0;
 	this.currentPlayer = players.get(0);
+	this.currentHero = currentPlayer.getHero();
 	this.sleepingDragonFactor = 8;
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -95,7 +95,7 @@ public class GameViewer
 
 
 	JPanel panel = new JPanel();
-	Color backGround = new Color(92, 62, 10);
+	Color backGround = new Color(92, 62, 10); //Magic number to generate desired background color.
 	panel.setBackground(backGround);
 	panel.add(currentHeroInfo);
 	panel.add(brickButton);
@@ -206,7 +206,7 @@ public class GameViewer
 	eventlog.append(text);
     }
 
-    public BrickType drawBrick() {
+    private BrickType drawBrick() {
 	BrickType type = bgenerator.generateBrick();
 	addTextToEventLog(type + " bricka placerad \n");
 	return type;
@@ -262,7 +262,7 @@ public class GameViewer
 	}
 
 	do {
-	    if (currentPlayerIndex == numberOfPlayers) {
+	    if (currentPlayerIndex == players.size()-1) {
 		comp.decrementSunTimer();
 		currentPlayerIndex = 0;
 	    } else currentPlayerIndex++;
@@ -295,22 +295,25 @@ public class GameViewer
 		currentPlayer.addTreasure(TreasureCard.JEWELRY, jewelryValue);
 		break;
 	    case TRAP:
-		int choice = JOptionPane.showOptionDialog(frame.getParent(),
-							  "När du öppnar kistan aktiveras en fälla och du måste omedelbart slå T12-3-TF " +
-							  "för att se hur mycket skada du tar", "Fälla!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-							  null, diceOption, diceOption[0]);
+		int choice = JOptionPane.showOptionDialog(
+			frame.getParent(),"När du öppnar kistan aktiveras en fälla och du måste omedelbart slå T12-3-TF "
+					  +"för att se hur mycket skada du tar", "Fälla!",
+			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, diceOption, diceOption[0]
+		);
 		if (choice == 0) {
 		    int r = rnd.nextInt(T12) + 1;
 		    addTextToEventLog("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - 3 - currentHero.getLuckFactor();
 		    if (damageTaken > 0) {
 			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
-			JOptionPane.showMessageDialog(frame.getParent(),
-						      "Du lyckas inte undvika fällan utan tar " + damageTaken + " skada");
+			JOptionPane.showMessageDialog(
+				frame.getParent(),"Du lyckas inte undvika fällan utan tar " + damageTaken + " skada"
+			);
 			currentPlayer.checkHealth();
 		    } else {
-			JOptionPane.showMessageDialog(frame.getParent(),
-						      "Turligt nog missar fällan dina händer och du tar ingen skada");
+			JOptionPane.showMessageDialog(
+				frame.getParent(),"Turligt nog missar fällan dina händer och du tar ingen skada"
+			);
 		    }
 		}
 	}
@@ -398,93 +401,46 @@ public class GameViewer
 		break;
 
 	    case ARROWTRAP:
-		choice = JOptionPane.showOptionDialog(frame.getParent(),
-						      "Plötsligt börjar pilar skjutas ut från väggarna och du tar skador motsvarande T12 - RF",
-						      card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-						      null, options, options[0]);
+		choice = JOptionPane.showOptionDialog(
+			frame.getParent(),
+			"Plötsligt börjar pilar skjutas ut från väggarna och du tar skador motsvarande T12 - RF",
+			card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+			null, options, options[0]
+		);
 		if (choice == 0) {
 		    int r = rnd.nextInt(T12) + 1;
 		    addTextToEventLog("Tärningen visar: " + r + "\n");
 		    int damageTaken = r - currentHero.getArmorFactor();
 		    if (damageTaken > 0) {
 			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
-			JOptionPane.showMessageDialog(frame.getParent(),
-						      "Pilarna penetrerar din rustning och du tar " + damageTaken + " skada");
+			JOptionPane.showMessageDialog(
+				frame.getParent(),"Pilarna penetrerar din rustning och du tar " + damageTaken + " skada"
+			);
 			currentPlayer.checkHealth();
-		    } else JOptionPane.showMessageDialog(frame.getParent(),
-							 "Pilarna lyckas inte penetrera din rustning, du tar ingen skada");
+		    } else JOptionPane.showMessageDialog(
+		    	frame.getParent(),"Pilarna lyckas inte penetrera din rustning, du tar ingen skada"
+		    );
 		}
 		break;
 
 	    case TROLLAMBUSH:
-		choice = JOptionPane.showOptionDialog(frame.getParent(),
-						      "Du blir överfallen av ett troll, du måste först slå T12-TF för att se" +
-						      "hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss",
-						      card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-		if (choice == 0) {
-		    int r = rnd.nextInt(T12) + 1;
-		    addTextToEventLog("Tärningen visar: " + r + "\n");
-		    int damageTaken = r - currentHero.getLuckFactor();
-		    if (damageTaken > 0) {
-			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
-			JOptionPane.showMessageDialog(frame.getParent(),
-						      "Trollet hugger dig och du tar " + damageTaken + " skada");
-
-		    } else JOptionPane.showMessageDialog(frame.getParent(), "Trollets hugg missar dig");
-		}
-		if (currentPlayer.checkHealth()) battleWithMonster(card, rnd);
-		break;
-
 	    case SKELETONAMBUSH:
-		choice = JOptionPane.showOptionDialog(frame.getParent(),
-						      "Du blir överfallen av ett skelett, du måste först slå T12-TF för att se" +
-						      "hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss",
-						      card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-		if (choice == 0) {
-		    int r = rnd.nextInt(T12) + 1;
-		    addTextToEventLog("Tärningen visar: " + r + "\n");
-		    int damageTaken = r - currentHero.getLuckFactor();
-		    if (damageTaken > 0) {
-			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
-			JOptionPane.showMessageDialog(frame.getParent(),
-						      "Skelettet hugger dig och du tar " + damageTaken + " skada");
-
-
-		    } else {
-			JOptionPane.showMessageDialog(frame.getParent(), "Skelettets hugg missar dig");
-		    }
-		}
-		if (currentPlayer.checkHealth()) battleWithMonster(card, rnd);
-		break;
-
 	    case ORCAMBUSH:
-		choice = JOptionPane.showOptionDialog(frame.getParent(),
-						      "Du blir överfallen av en orch, du måste först slå T12-TF för att se" +
-						      "hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss",
-						      card.toString(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-		if (choice == 0) {
-		    int r = rnd.nextInt(T12) + 1;
-		    addTextToEventLog("Tärningen visar: " + r + "\n");
-		    int damageTaken = r - currentHero.getLuckFactor();
-		    if (damageTaken > 0) {
-			currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
-			JOptionPane
-				.showMessageDialog(frame.getParent(), "Orchen hugger dig och du tar " + damageTaken + " skada");
-
-		    } else {
-			JOptionPane.showMessageDialog(frame.getParent(), "Orchens hugg missar dig");
-		    }
-		    if (currentPlayer.checkHealth()) battleWithMonster(card, rnd);
-		}
-		break;
+	        ambush(options, rnd, card);
+	        if (currentPlayer.checkHealth()) battleWithMonster(card, rnd);
+	        break;
 
 	    case EMPTY:
-		JOptionPane.showInternalMessageDialog(frame.getParent(), card.toString(), "Rumskort", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showInternalMessageDialog(
+			frame.getParent(), card.toString(), "Rumskort", JOptionPane.INFORMATION_MESSAGE
+		);
 		break;
 
 	    default:
-		JOptionPane.showInternalMessageDialog(frame.getParent(), "Du stöter på " + card + " och går till attack!",
-						      "Rumskort", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showInternalMessageDialog(
+			frame.getParent(), "Du stöter på " + card + " och går till attack!","Rumskort",
+			JOptionPane.INFORMATION_MESSAGE
+		);
 		battleWithMonster(card, rnd);
 	}
     }
@@ -498,10 +454,12 @@ public class GameViewer
 	} else {
 	    JOptionPane.showMessageDialog(frame.getParent(), "Monstret möter din attack!");
 	    while (monsterHealth > 0) {
-		int choice = JOptionPane.showOptionDialog(frame.getParent(),
-							  "Du och monstret väljer en varsin attack. Reglerna som gäller är:\n 	A slår B, B slår C, C slår A",
-							  "Strid med " + card + "!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-							  null, currentHero.getAttackOptions(), null);
+		int choice = JOptionPane.showOptionDialog(
+			frame.getParent(),"Du och monstret väljer en varsin attack. Reglerna som gäller är:\n " +
+					  "A slår B, B slår C, C slår A","Strid med " + card + "!",
+			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+			null, currentHero.getAttackOptions(), null
+		);
 		Attack monsterAttack = Attack.values()[rnd.nextInt(3)];
 		Attack heroAttack = Attack.values()[choice];
 
@@ -520,7 +478,13 @@ public class GameViewer
 		    currentHero.setCurrentHealth(currentHero.getCurrentHealth() - 1);
 		    monsterHealth--;
 		}
-		if (!currentPlayer.checkHealth()) break;
+		if (!currentPlayer.checkHealth()) {
+		    JOptionPane.showInternalMessageDialog(
+		    	frame.getParent(), "Du förlorade striden och dog av dina skador. Ditt äventyr är över",
+			"Du dog", JOptionPane.INFORMATION_MESSAGE
+		    );
+		    break;
+		}
 		comp.repaint();
 	    }
 	    JOptionPane.showInternalMessageDialog(frame.getParent(), "Monstret dog och du pustar ut. Din runda är över",
@@ -542,7 +506,7 @@ public class GameViewer
 	    case TWOORCS:
 		return escapeFactor < 9 ? rnd.nextInt(4) + 3 : 0;
 	    case TROLLAMBUSH:
-		return rnd.nextInt(4 + 1);
+		return rnd.nextInt(4) + 1;
 	    case SKELETONAMBUSH:
 		return rnd.nextInt(4) + 2;
 	    case ORCAMBUSH:
@@ -550,6 +514,44 @@ public class GameViewer
 	    default:
 		return 0;
 	}
+    }
+
+    private void ambush(Object[] options, Random rnd, RoomCard card){
+        String msg1, msg2;
+
+        switch (card){
+	    case SKELETONAMBUSH:
+	        msg1 = "ett skelett";
+	        msg2 = "Skelettet";
+	        break;
+	    case TROLLAMBUSH:
+	        msg1 = "ett troll";
+	        msg2 = "Trollet";
+	        break;
+	    case ORCAMBUSH:
+	        msg1 = "en orch";
+	        msg2 = "Orchen";
+	        break;
+	    default:
+	        msg1 = "";
+	        msg2 = "";
+	}
+
+	int choice = JOptionPane.showOptionDialog(
+		frame.getParent(),"Du blir överfallen av " + msg1 + " ,du måste först slå T12-TF för att se" +
+				  " hur mycket skada du tar av dess initiala hugg, innan du kan börja slåss",
+		"Överfall!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+			if (choice == 0) {
+			    int r = rnd.nextInt(T12) + 1;
+			    addTextToEventLog("Tärningen visar: " + r + "\n");
+			    int damageTaken = r - currentHero.getLuckFactor();
+			    if (damageTaken > 0) {
+				currentHero.setCurrentHealth(currentHero.getCurrentHealth() - damageTaken);
+				JOptionPane.showMessageDialog(
+					frame.getParent(), msg2 + " hugger dig och du tar " + damageTaken + " skada");
+			    }
+			    else JOptionPane.showMessageDialog(frame.getParent(), msg2 + "s hugg missar dig");
+			}
     }
 
     private void checkDragon(Random rnd) {
@@ -576,6 +578,7 @@ public class GameViewer
 		    int damageTaken = rnd.nextInt(T12);
 		    hero.setCurrentHealth(hero.getCurrentHealth() - damageTaken);
 		    addTextToEventLog("Spelare " + players.get(i).getName() + " tar " + damageTaken + " skada från draken \n");
+		    players.get(i).removeTreasuresFromChamber();
 		    if (!currentPlayer.checkHealth()) {
 			addTextToEventLog(players.get(i).getName() + " dog");
 		    }
@@ -608,33 +611,35 @@ public class GameViewer
         int row = currentHero.getyPos();
         int col = currentHero.getxPos();
 
-        if (direction.equals("Uppåt")) {
-            if (gameBoard.getBrick(row-1, col).getType().equals(BrickType.UNDISCOVERED)) {
-		BrickType type = drawBrick();
-                gameBoard.placeBrick(row-1,col,type, Direction.UP);
-	    }
-            currentHero.setyPos(row-1);
-	}
-        else if (direction.equals("Vänster")){
-            if (gameBoard.getBrick(row,col-1).getType().equals(BrickType.UNDISCOVERED)){
-                BrickType type = drawBrick();
-                gameBoard.placeBrick(row,col-1,type, Direction.LEFT);
-	    }
-            currentHero.setxPos(col-1);
-	}
-        else if (direction.equals("Höger")){
-            if (gameBoard.getBrick(row,col+1).getType().equals(BrickType.UNDISCOVERED)){
-                BrickType type = drawBrick();
-                gameBoard.placeBrick(row, col+1, type, Direction.RIGHT);
-	    }
-            currentHero.setxPos(col+1);
-	}
-        else {
-            if (gameBoard.getBrick(row+1,col).getType().equals(BrickType.UNDISCOVERED)){
-                BrickType type = drawBrick();
-                gameBoard.placeBrick(row+1, col, type, Direction.DOWN);
-	    }
-            currentHero.setyPos(row+1);
+        switch (direction) {
+	    case "Uppåt":
+		if (gameBoard.getBrick(row - 1, col).getType().equals(BrickType.UNDISCOVERED)) {
+		    BrickType type = drawBrick();
+		    gameBoard.placeBrick(row - 1, col, type, Direction.UP);
+		}
+		currentHero.setyPos(row - 1);
+		break;
+	    case "Vänster":
+		if (gameBoard.getBrick(row, col - 1).getType().equals(BrickType.UNDISCOVERED)) {
+		    BrickType type = drawBrick();
+		    gameBoard.placeBrick(row, col - 1, type, Direction.LEFT);
+		}
+		currentHero.setxPos(col - 1);
+		break;
+	    case "Höger":
+		if (gameBoard.getBrick(row, col + 1).getType().equals(BrickType.UNDISCOVERED)) {
+		    BrickType type = drawBrick();
+		    gameBoard.placeBrick(row, col + 1, type, Direction.RIGHT);
+		}
+		currentHero.setxPos(col + 1);
+		break;
+	    default:
+	        if (gameBoard.getBrick(row + 1, col).getType().equals(BrickType.UNDISCOVERED)) {
+		    BrickType type = drawBrick();
+		    gameBoard.placeBrick(row + 1, col, type, Direction.DOWN);
+		}
+		currentHero.setyPos(row + 1);
+
 	}
     }
 
@@ -714,6 +719,7 @@ public class GameViewer
 	    } else if ((!movedWithinTreasureRoom)) {
 		allowedActions.remove(Action.MOVEHERO);
 		allowedActions.remove(Action.DRAWTREASURECARD);
+		allowedActions.remove(Action.DRAWROOMSEARCHCARD);
 		allowedActions.add(Action.DRAWROOMCARD);
 	    }
 
@@ -813,6 +819,15 @@ public class GameViewer
 		    	frame.getParent(),"Du fann ett smycke värt " + jewelryValue + " gömt i rummet",
 			"Smycke!", JOptionPane.INFORMATION_MESSAGE
 		    );
+		    advanceTurn();
+		    break;
+		case AMBUSH:
+		    final Object[] diceOptions = { "Slå tärning" };
+		    JOptionPane.showInternalMessageDialog(
+		    	frame.getParent(), "Du hittar inget i rummet, däremot finner ett skelett dig medan du letar och " +
+					   "du blir överfallen", "Överrumpling", JOptionPane.INFORMATION_MESSAGE
+		    );
+		    ambush(diceOptions, rnd, RoomCard.SKELETONAMBUSH);
 		    advanceTurn();
 		    break;
 		default:

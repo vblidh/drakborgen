@@ -32,10 +32,6 @@ public class BrickMaker
     public BrickMaker() {
     }
 
-    public int numberOfBrickTypes(){
-        return BrickType.values().length;
-    }
-
     public Brick createBrick(BrickType type){
         switch (type){
 	    case AHEAD:

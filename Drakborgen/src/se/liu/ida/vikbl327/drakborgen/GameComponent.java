@@ -8,7 +8,7 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * Paints out the board on a Jframe.
+ * Handles the painting of each individual square, aswell as the suntimer. This is then added to a Jframe in GameViewer.
  */
 
 public class GameComponent extends JComponent implements BoardListener
@@ -23,6 +23,7 @@ public class GameComponent extends JComponent implements BoardListener
     private static final int TREASURE_ROW = 29;
     private static final int BOARD_WIDTH = 13*6*SQUARE_SIZE;
     private static final int SUNTIMERPLACEMENT = 10*6*SQUARE_SIZE + 10;
+    private static final int SUNTIMERTEXTPLACEMENT = SUNTIMERPLACEMENT + 40;
     private static final int MENU_SIZE = 60;
     private static final int CIRCLE_RADIUS = 25;
     private static final int [] TREASURE_COLS = {36,37,38,39,40,41};
@@ -33,8 +34,6 @@ public class GameComponent extends JComponent implements BoardListener
 	this.gameBoard = gameBoard;
 	this.squareColors = generateDefaultColors();
 	this.sunTimer = STARTTIMER;
-
-
     }
 
     public int getSunTimer() {
@@ -72,7 +71,7 @@ public class GameComponent extends JComponent implements BoardListener
 	    g2d.fillOval(i*(CIRCLE_RADIUS+2), SUNTIMERPLACEMENT, CIRCLE_RADIUS, CIRCLE_RADIUS);
 	}
 	g2d.setColor(Color.WHITE);
-	g2d.drawString("Rundor kvar tills alla kvarvarande hjältar dör: " + sunTimer, BOARD_WIDTH/4, SUNTIMERPLACEMENT+40);
+	g2d.drawString("Rundor kvar tills alla kvarvarande hjältar dör: " + sunTimer, BOARD_WIDTH/4, SUNTIMERTEXTPLACEMENT);
 
 	AffineTransform saveAt = g2d.getTransform();
 	for (Character hero : gameBoard.getCharacters()) {

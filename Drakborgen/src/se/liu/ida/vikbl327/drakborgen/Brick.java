@@ -1,5 +1,9 @@
 package se.liu.ida.vikbl327.drakborgen;
 
+/**
+ * Brick class representing the bricks shown on the board. The board consists of 13*10 Bricks, and each Brick contains 6x6
+ * squares which defines its appearance.
+ */
 public class Brick
 {
     private SquareType[][] brickSquares;
@@ -56,14 +60,6 @@ public class Brick
 	return newBrick;
     }
 
-    public void highlightBrickAlt() {
-	for (int i = 1; i < 5; i++) {
-	    for (int j = 1; j < 5; j++) {
-		this.brickSquares[i][j] = SquareType.HIGHLIGHTED;
-	    }
-	}
-    }
-
     public Brick highlightBrick(){
 	int row = this.brickSquares.length;
 	int col = this.brickSquares[0].length;
@@ -80,12 +76,4 @@ public class Brick
 	return newBrick;
     }
 
-    public void unHighlightBrickAlt() {
-	for (int i = 1; i < 5; i++) {
-	    for (int j = 1; j < 5; j++) {
-		brickSquares[i][j] = type.equals(BrickType.START) ? SquareType.START :
-				     (type.equals(BrickType.TREASURE)) ? SquareType.TREASURE : SquareType.PATH;
-	    }
-	}
-    }
 }

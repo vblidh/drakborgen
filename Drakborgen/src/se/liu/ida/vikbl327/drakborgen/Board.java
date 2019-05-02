@@ -1,9 +1,7 @@
 package se.liu.ida.vikbl327.drakborgen;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * This class stores the representation of the board. Contains information on what bricks are on the board, and where heroes are
@@ -13,7 +11,7 @@ public class Board
 {
     private Brick[][] bricks;
     private List<BoardListener> listeners;
-    private Queue<Character> characters;
+    private List<Character> characters;
 
     private int height;
     private int width;
@@ -24,7 +22,7 @@ public class Board
 	this.width = width;
 	this.maker = new BrickMaker();
 	this.listeners = new ArrayList<>();
-	this.characters = new LinkedList<>();
+	this.characters = new ArrayList<>();
 	this.bricks = new Brick[height][width];
 
 	clearBoard();
@@ -40,12 +38,8 @@ public class Board
 	return width;
     }
 
-    public Queue<Character> getCharacters() {
+    public List<Character> getCharacters() {
 	return characters;
-    }
-
-    public Character getCharacter() {
-	return characters.remove();
     }
 
     public Brick getBrick(int row, int col) {
