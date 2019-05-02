@@ -1,4 +1,4 @@
-package se.liu.ida.vikbl327.drakborgen;
+package se.liu.ida.vikbl327.drakborgen.cards;
 
 import java.util.Random;
 
@@ -9,6 +9,16 @@ import java.util.Random;
 
 public enum TreasureCard
 {
+    JEWELRY {
+	@Override
+	public int getValue(Random rnd) {
+      		return (rnd.nextInt(5)+1)*50;
+}
+
+	@Override public String toString() {
+		return "Du hittade ett smycke";
+}
+    },
 
     COINS {
         @Override

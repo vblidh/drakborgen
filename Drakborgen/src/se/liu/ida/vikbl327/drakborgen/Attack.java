@@ -7,12 +7,13 @@ package se.liu.ida.vikbl327.drakborgen;
 
 public enum Attack
 {
+
     A {
 	@Override public boolean beats(Attack other) {
 	    return other == B;
 	}
     },
-    B{
+    B {
 	@Override public boolean beats(Attack other) {
 		    return other == C;
 		}

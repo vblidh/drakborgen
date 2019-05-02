@@ -13,7 +13,7 @@ public interface Character
 
     public Object[] getAttackOptions();
 
-    public int getDoubleDamageAttack();
+    public int getDoubleDamageAttackIndex();
 
     public int getHealthPoints();
 

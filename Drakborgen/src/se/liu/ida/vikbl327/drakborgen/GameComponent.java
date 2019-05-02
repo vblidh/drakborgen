@@ -17,6 +17,7 @@ public class GameComponent extends JComponent implements BoardListener
     private EnumMap<SquareType, Color> squareColors;
     private int sunTimer;
 
+    private static final int STARTTIMER = 25;
     private static final int BRICK_SIZE = 60;
     private static final int SQUARE_SIZE = 10;
     private static final int TREASURE_ROW = 29;
@@ -31,7 +32,8 @@ public class GameComponent extends JComponent implements BoardListener
     public GameComponent(final Board gameBoard) {
 	this.gameBoard = gameBoard;
 	this.squareColors = generateDefaultColors();
-	this.sunTimer = 30;
+	this.sunTimer = STARTTIMER;
+
 
     }
 
@@ -82,21 +84,6 @@ public class GameComponent extends JComponent implements BoardListener
 	    icon.paintIcon(this, g, hero.getCalculatedxPos(),hero.getCalculatedyPos());
 	    g2d.setTransform(saveAt);
 	}
-
-
-	g2d.setColor(Color.BLACK);
-	/*
-	if (currentHero != null) {
-	    g2d.setFont(new Font("Monospaced", Font.PLAIN, TEXT_SIZE));
-	    g2d.drawString("Hjälte: " + currentHero.getName(), BOARD_WIDTH, TEXT_SIZE);
-
-	    g2d.drawString("Styrka (SF):   " + currentHero.getStrengthFactor(), BOARD_WIDTH, 2 * TEXT_SIZE);
-	    g2d.drawString("Vighet (VF):   " + currentHero.getAgilityFactor(), BOARD_WIDTH, 3 * TEXT_SIZE);
-	    g2d.drawString("Rustning (RF): " + currentHero.getArmorFactor(), BOARD_WIDTH, 4 * TEXT_SIZE);
-	    g2d.drawString("Tur (TF):      " + currentHero.getLuckFactor(), BOARD_WIDTH, 5 * TEXT_SIZE);
-	    g2d.drawString("Kroppspoäng: " + currentHero.getCurrentHealth() + "/" + currentHero.getHealthPoints(),
-			   BOARD_WIDTH, 6 * TEXT_SIZE);
-	}*/
     }
 
 

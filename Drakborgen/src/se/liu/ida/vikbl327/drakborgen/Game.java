@@ -26,8 +26,10 @@ public final class Game
 	List<Player> players = new ArrayList<>();
 	players.add(player1);
 	players.add(player2);
-	hero2.setyPos(9);
-	hero2.setxPos(0);
+	hero.setyPos(3);
+	hero.setxPos(5);
+	hero2.setyPos(4);
+	hero2.setxPos(4);
 
 	GameViewer viewer = new GameViewer(board, players);
 

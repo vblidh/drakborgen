@@ -6,5 +6,25 @@ package se.liu.ida.vikbl327.drakborgen;
 
 public enum Direction
 {
-    RIGHT, UP, DOWN, LEFT, INVALID
+    RIGHT {
+        @Override public String toString() {
+            return "Höger";
+        }
+    },
+    UP {
+        @Override public String toString() {
+            return "Uppåt";
+        }
+    },
+    DOWN {
+        @Override public String toString() {
+            return "Nedåt";
+        }
+    },
+    LEFT {
+        @Override public String toString() {
+            return "Vänster";
+        }
+    },
+    INVALID
 }
