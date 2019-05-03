@@ -6,6 +6,9 @@ import se.liu.ida.vikbl327.drakborgen.cards.RoomCard;
 import se.liu.ida.vikbl327.drakborgen.cards.RoomSearchCard;
 import se.liu.ida.vikbl327.drakborgen.cards.TreasureCard;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.text.BadLocationException;
@@ -47,15 +50,17 @@ public class GameViewer
     private JButton roomSearchButton;
     private JButton leaveDungeonButton;
     private MouseInputAdapter mouseAdapter;
-    private boolean movedWithinTreasureRoom;
 
     private List<Player> players;
     private List<Action> allowedActions;
+    private Random rnd;
 
-    private Point highLightedBrick;
+    @Nullable private Point highLightedBrick;
     private Player currentPlayer;
     private int currentPlayerIndex;
     private int sleepingDragonFactor;
+    private boolean movedWithinTreasureRoom;
+
 
     public GameViewer(final Board gameBoard, final List<Player> players) {
 	this.gameBoard = gameBoard;
@@ -63,8 +68,6 @@ public class GameViewer
 	this.frame = new JFrame("Drakborgen");
 	this.comp = new GameComponent(gameBoard);
 	gameBoard.addBoardListener(comp);
-	this.currentHero = null;
-
 	this.bgenerator = new BrickGenerator();
 	this.cgenerator = new CardGenerator();
 	this.highLightedBrick = null;
@@ -74,11 +77,11 @@ public class GameViewer
 	this.currentPlayer = players.get(0);
 	this.currentHero = currentPlayer.getHero();
 	this.sleepingDragonFactor = 8;
+	this.rnd = new Random();
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	double width = screenSize.getWidth();
 	double height = screenSize.getHeight();
-
 	System.out.println("Width: " + width + " Height: " + height);
 
 	final JMenuBar menuBar = new JMenuBar();
@@ -251,7 +254,8 @@ public class GameViewer
 	for (Player player : players) {
 	    if (comp.getSunTimer() == 0 && currentPlayerIndex == players.size()-1) player.kill();
 	    else if (player.isAlive()) alivePlayers++;
-	    clearTreasureRoom = !gameBoard.getBrick(player.getHero().getyPos(), player.getHero().getxPos()).getType().equals(BrickType.TREASURE);
+	    if (gameBoard.getBrick(player.getHero().getyPos(), player.getHero().getxPos()).getType().equals(BrickType.TREASURE))
+	        clearTreasureRoom = false;
 
 	}
 	if (clearTreasureRoom) sleepingDragonFactor = 8;
@@ -275,7 +279,7 @@ public class GameViewer
 	if (curBrickType.equals(BrickType.TREASURE)) {
 	    allowedActions.add(Action.DRAWTREASURECARD);
 	}
-	else if (!curBrickType.equals(BrickType.START)) {
+	if (!curBrickType.equals(BrickType.START)) {
 	    leaveDungeonButton.setVisible(false);
 	}
 	else leaveDungeonButton.setVisible(true);
@@ -320,8 +324,7 @@ public class GameViewer
     }
 
 
-    private void handleRoomCard(RoomCard card) {
-	Random rnd = new Random();
+    private void handleRoomCard(@NotNull RoomCard card) {
 	final Object[] options = { "Slå tärning" };
 	int choice;
 	switch (card) {
@@ -426,8 +429,8 @@ public class GameViewer
 	    case TROLLAMBUSH:
 	    case SKELETONAMBUSH:
 	    case ORCAMBUSH:
-	        ambush(options, rnd, card);
-	        if (currentPlayer.checkHealth()) battleWithMonster(card, rnd);
+	        ambush(options, card);
+	        if (currentPlayer.checkHealth()) battleWithMonster(card);
 	        break;
 
 	    case EMPTY:
@@ -441,12 +444,12 @@ public class GameViewer
 			frame.getParent(), "Du stöter på " + card + " och går till attack!","Rumskort",
 			JOptionPane.INFORMATION_MESSAGE
 		);
-		battleWithMonster(card, rnd);
+		battleWithMonster(card);
 	}
     }
 
-    private void battleWithMonster(RoomCard card, Random rnd) {
-	int monsterHealth = decideMonsterAction(card, rnd);
+    private void battleWithMonster(RoomCard card) {
+	int monsterHealth = decideMonsterAction(card);
 	boolean monsterFlees = (monsterHealth == 0);
 
 	if (monsterFlees) {
@@ -485,16 +488,15 @@ public class GameViewer
 		    	frame.getParent(), "Du förlorade striden och dog av dina skador. Ditt äventyr är över",
 			"Du dog", JOptionPane.INFORMATION_MESSAGE
 		    );
-		    break;
+		    return;
 		}
-		comp.repaint();
 	    }
 	    JOptionPane.showInternalMessageDialog(frame.getParent(), "Monstret dog och du pustar ut. Din runda är över",
 						  "Strid över", JOptionPane.INFORMATION_MESSAGE);
 	}
     }
 
-    private int decideMonsterAction(RoomCard card, Random rnd) {
+    private int decideMonsterAction(@NotNull RoomCard card) {
 	int escapeFactor = rnd.nextInt(T12);
 	switch (card) {
 	    case GOBLIN:
@@ -518,7 +520,7 @@ public class GameViewer
 	}
     }
 
-    private void ambush(Object[] options, Random rnd, RoomCard card){
+    private void ambush(Object[] options, @NotNull RoomCard card){
         String msg1, msg2;
 
         switch (card){
@@ -556,7 +558,7 @@ public class GameViewer
 			}
     }
 
-    private void checkDragon(Random rnd) {
+    private void checkDragon() {
 	int r = rnd.nextInt(sleepingDragonFactor);
 	sleepingDragonFactor--;
 	System.out.println("Dragon: " + sleepingDragonFactor);
@@ -576,7 +578,8 @@ public class GameViewer
 	    Point p = new Point(0, 0);
 	    for (int i = 0; i < players.size(); i++) {
 		Character hero = players.get(i).getHero();
-		if (gameBoard.getBrick(hero.getyPos(), hero.getxPos()).getType().equals(BrickType.TREASURE)) {
+		if (gameBoard.getBrick(hero.getyPos(), hero.getxPos()).getType().equals(BrickType.TREASURE)
+		    && players.get(i).getPlayerStatus().equals("Alive")) {
 		    int damageTaken = rnd.nextInt(T12);
 		    hero.setCurrentHealth(hero.getCurrentHealth() - damageTaken);
 		    addTextToEventLog("Spelare " + players.get(i).getName() + " tar " + damageTaken + " skada från draken \n");
@@ -609,9 +612,9 @@ public class GameViewer
 	return possibleLocations;
     }
 
-    private void moveThroughHiddenDoor(String direction) {
-        int row = currentHero.getyPos();
-        int col = currentHero.getxPos();
+    private void moveThroughHiddenDoor(@NotNull String direction) {
+	int row = currentHero.getyPos();
+	int col = currentHero.getxPos();
 
         switch (direction) {
 	    case "Uppåt":
@@ -675,12 +678,11 @@ public class GameViewer
     private class QuitAction extends AbstractAction
     {
 	@Override public void actionPerformed(final ActionEvent e) {
-	    /*if (JOptionPane.showConfirmDialog(null, "Vill du avsluta spelet?", "Avslutar Drakborgen", JOptionPane.YES_NO_OPTION) ==
+	    if (JOptionPane.showConfirmDialog(null, "Vill du avsluta spelet?", "Avslutar Drakborgen", JOptionPane.YES_NO_OPTION) ==
 		JOptionPane.YES_OPTION) {
 
-
-	    }*/
-	    System.exit(0);
+		System.exit(0);
+	    }
 	}
     }
 
@@ -751,7 +753,6 @@ public class GameViewer
 	@Override public void actionPerformed(final ActionEvent actionEvent) {
 	    if (gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType().equals(BrickType.TREASURE) &&
 		allowedActions.contains(Action.DRAWTREASURECARD)) {
-		Random rnd = new Random();
 		for (int i = 0; i < 2; i++) {
 		    TreasureCard card = cgenerator.drawTreasureCard();
 		    int cardValue = card.getValue(rnd);
@@ -759,7 +760,7 @@ public class GameViewer
 							  "Skattkammarkort", JOptionPane.INFORMATION_MESSAGE);
 		    currentPlayer.addTreasure(card, cardValue);
 		}
-		checkDragon(rnd);
+		checkDragon();
 	    } else {
 		addTextToEventLog("Du kan bara dra skattkammarkort när du befinner dig i skattkammaren");
 	    }
@@ -775,31 +776,25 @@ public class GameViewer
 		return;
 	    }
 
-	    Random rnd = new Random();
-
-
 	    Brick curBrick = gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos());
-	    List<Direction> availableDirections = new ArrayList<>();
 	    List<Object> optionList = new ArrayList<>();
 
-	    if (curBrick.getSquare(0, 3).equals(SquareType.WALL)) availableDirections.add(Direction.UP);
-	    if (curBrick.getSquare(3, 0).equals(SquareType.WALL)) availableDirections.add(Direction.LEFT);
-	    if (curBrick.getSquare(3, 5).equals(SquareType.WALL)) availableDirections.add(Direction.RIGHT);
-	    if (curBrick.getSquare(5, 3).equals(SquareType.WALL)) availableDirections.add(Direction.DOWN);
+	    if (curBrick.getSquare(0, 3).equals(SquareType.WALL)) optionList.add("Uppåt");
+	    if (curBrick.getSquare(3, 0).equals(SquareType.WALL)) optionList.add("Vänster");
+	    if (curBrick.getSquare(3, 5).equals(SquareType.WALL)) optionList.add("Höger");
+	    if (curBrick.getSquare(5, 3).equals(SquareType.WALL)) optionList.add("Nedåt");
 
-	    if (availableDirections.isEmpty()) {
+	    if (optionList.isEmpty()) {
 		eventlog.setText("Det finns ingen möjlig riktning att söka i");
 		return;
 	    }
 
-	    for (int i = 0; i < availableDirections.size(); i++) {
-		optionList.add(availableDirections.get(i).toString());
-	    }
 
 	    Object[] options = optionList.toArray();
-	    int chosenDirection = JOptionPane
-		    .showOptionDialog(frame.getParent(), "Välj den riktning du vill söka efter lönndörr i:", "Rumsletning",
-				      JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, null);
+	    int chosenDirection = JOptionPane.showOptionDialog(
+	    	frame.getParent(), "Välj den riktning du vill söka efter lönndörr i:", "Rumsletning",
+		JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, null
+	    );
 	    RoomSearchCard card = cgenerator.drawRoomSearchCard();
 
 	    switch (card) {
@@ -829,8 +824,8 @@ public class GameViewer
 		    	frame.getParent(), "Du hittar inget i rummet, däremot finner ett skelett dig medan du letar och " +
 					   "du blir överfallen", "Överrumpling", JOptionPane.INFORMATION_MESSAGE
 		    );
-		    ambush(diceOptions, rnd, RoomCard.SKELETONAMBUSH);
-		    battleWithMonster(RoomCard.SKELETONAMBUSH, rnd);
+		    ambush(diceOptions, RoomCard.SKELETONAMBUSH);
+		    battleWithMonster(RoomCard.SKELETONAMBUSH);
 		    advanceTurn();
 		    break;
 		default:

@@ -17,12 +17,12 @@ public class Aelfric implements Character
     private static final int LUCK_FACTOR = 8;
     private static final int DOUBLE_DAMAGE_ATTACK_INDEX = 2;
 
-    private static final double SCALE_X = 0.13;
-    private static final double SCALE_Y = 0.1;
+    private static final double SCALE_X = 0.11;
+    private static final double SCALE_Y = 0.08;
     private static final int X_POS_FACTOR = 70;
-    private static final int Y_POS_FACTOR = 100;
-    private static final int X_POS_MULTIPLIER = 460;
-    private static final int Y_POS_MULTIPLIER = 590;
+    private static final int Y_POS_FACTOR = 140;
+    private static final int X_POS_MULTIPLIER = 550;
+    private static final int Y_POS_MULTIPLIER = 730;
 
 
     private int currentHealth;

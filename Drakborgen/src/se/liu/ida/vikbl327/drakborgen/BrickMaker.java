@@ -51,8 +51,7 @@ public class BrickMaker
 	    case START:
 	        return createStart();
 	    case TREASURE:
-	        return createTreasureBot();
-	    //TODO: Add more bricks
+	        return createTreasure();
 	    default:
 	        return createUndiscovered();
 	}
@@ -96,7 +95,7 @@ public class BrickMaker
 	return new Brick(temp, BrickType.START);
     }
 
-    private Brick createTreasureBot(){
+    private Brick createTreasure(){
 	SquareType [][] temp = { TREASURE, TREASURE, TREASUREOPENSIDES, TREASUREOPENSIDES, TREASURE, MIDOPEN};
 	return new Brick(temp, BrickType.TREASURE);
     }

@@ -4,8 +4,7 @@ import se.liu.ida.vikbl327.drakborgen.Character;
 import javax.swing.*;
 
 /**
- * Sigier is one of the original heroes playable in this game. Creating Sigier unleashes a fiercesome barbarian who does not
- * fear the terrors of Drakborgen.
+ * Sigier is one of the original heroes playable in this game.
  */
 
 public class Sigier implements Character

@@ -5,7 +5,8 @@ import java.util.List;
 
 /**
  * This class stores the representation of the board. Contains information on what bricks are on the board, and where heroes are
- * standing. Contains methods for placing new bricks on the board and for retrieving the SquareType of any given square.
+ * standing. Contains methods for placing new bricks aswell as highlighting a brick chosen by the player. Also contains the
+ * getSquare method which is used by gameComponent to get a single squareType.
  */
 public class Board
 {

@@ -6,7 +6,8 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
- * Brickgenerator generates a shuffled list of bricktypes that can be drawn from by calling the generateBrick() method.
+ * Brickgenerator generates a shuffled list of bricktypes that can be drawn from by calling the generateBrick() method. Used
+ * by the gameViewer class to get new bricktypes that will be placed on the board.
  */
 
 public class BrickGenerator

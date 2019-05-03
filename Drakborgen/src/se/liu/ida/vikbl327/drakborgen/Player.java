@@ -3,6 +3,7 @@ package se.liu.ida.vikbl327.drakborgen;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import se.liu.ida.vikbl327.drakborgen.cards.TreasureCard;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,8 @@ public class Player
     private List<ImmutablePair<TreasureCard, Integer>> treasures;
 
     /*
-    This constructor is used once, when the winner is decided to check if none of the original heroes made it out alive
+    This constructor is used once, when the winner is decided to check if none of the original heroes made it out alive.
+    No operation is ever used on this player object, therefore some of the fields can safely be assigned null values.
      */
     public Player(){
         this.name = "None";
@@ -67,7 +69,7 @@ public class Player
     }
 
     public void removeTreasuresFromChamber(){
-    	treasures.removeIf(n -> (n.getLeft().equals(TreasureCard.JEWELRY)));
+    	treasures.removeIf(n -> (!n.getLeft().equals(TreasureCard.JEWELRY)));
     }
 
     public void leaveGame(){

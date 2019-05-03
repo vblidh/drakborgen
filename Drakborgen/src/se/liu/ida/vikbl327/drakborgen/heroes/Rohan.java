@@ -18,11 +18,11 @@ public class Rohan implements Character
     private static final int DOUBLE_DAMAGE_ATTACK_INDEX = 0;
 
     private static final double SCALE_X = 0.13;
-    private static final double SCALE_Y = 0.1;
-    private static final int X_POS_FACTOR = 70;
-    private static final int Y_POS_FACTOR = 100;
+    private static final double SCALE_Y = 0.088;
+    private static final int X_POS_FACTOR = 90;
+    private static final int Y_POS_FACTOR = 150;
     private static final int X_POS_MULTIPLIER = 460;
-    private static final int Y_POS_MULTIPLIER = 590;
+    private static final int Y_POS_MULTIPLIER = 680;
 
     private int currentHealth;
     private int xPos;

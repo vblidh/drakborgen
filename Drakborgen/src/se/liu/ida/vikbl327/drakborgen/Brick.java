@@ -24,6 +24,10 @@ public class Brick
 	return timesRotated;
     }
 
+    private int[] getSize(){
+        return new int[] {brickSquares.length, brickSquares[0].length};
+    }
+
     public void setTimesRotated(final int timesRotated) {
 	this.timesRotated = timesRotated;
     }
@@ -33,8 +37,8 @@ public class Brick
     }
 
     public Brick rotateRight() {
-	int r = this.brickSquares.length;
-	int c = this.brickSquares[0].length;
+	int r = getSize()[0];
+	int c = getSize()[1];
 
 	Brick newBrick = new Brick(new SquareType[r][c], this.type);
 
@@ -47,8 +51,8 @@ public class Brick
     }
 
     public Brick rotateLeft() {
-	int r = this.brickSquares.length;
-	int c = this.brickSquares[0].length;
+	int r = getSize()[0];
+	int c = getSize()[1];
 
 	Brick newBrick = new Brick(new SquareType[r][c], this.type);
 

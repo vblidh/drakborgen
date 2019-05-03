@@ -6,6 +6,7 @@ import se.liu.ida.vikbl327.drakborgen.heroes.Rohan;
 import se.liu.ida.vikbl327.drakborgen.heroes.Sigier;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -13,6 +14,7 @@ public final class Game
 {
     private static final int BOARDWIDTH = 13;
     private static final int BOARDHEIGHT = 10;
+    private static final List<int[]> STARTINGPOINTS = List.of(new int[]{0,0}, new int[]{0,12}, new int[]{9,0}, new int[]{9,12});
 
     private Game() {}
 
@@ -25,24 +27,25 @@ public final class Game
 	board.addCharacter(hero2);
 	Player player2 = new Player("Freja", hero2);
 	Character hero3 = new Bardor();
+	board.addCharacter(hero3);
 	Player player3 = new Player("Idun", hero3);
 	Character hero4 = new Rohan();
 	Player player4 = new Player("Hermod", hero4);
 	List<Player> players = new ArrayList<>();
-	board.addCharacter(hero3);
 	board.addCharacter(hero4);
 	players.add(player1);
 	players.add(player2);
 	players.add(player3);
 	players.add(player4);
-	hero.setyPos(0);
-	hero.setxPos(0);
-	hero2.setyPos(0);
-	hero2.setxPos(12);
-	hero3.setyPos(9);
-	hero3.setxPos(0);
-	hero4.setyPos(9);
-	hero4.setxPos(12);
+
+	Collections.shuffle(players);
+
+
+	for (int i = 0; i < players.size(); i++) {
+	    Character h = players.get(i).getHero();
+	    h.setyPos(STARTINGPOINTS.get(i)[0]);
+	    h.setxPos(STARTINGPOINTS.get(i)[1]);
+	}
 
 	GameViewer viewer = new GameViewer(board, players);
     }
