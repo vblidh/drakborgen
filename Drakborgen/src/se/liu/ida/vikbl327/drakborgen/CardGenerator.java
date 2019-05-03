@@ -17,7 +17,7 @@ import java.util.Random;
 public class CardGenerator
 {
 
-    private static final int [] AMOUNT_OF_ROOMCARDS = {30,4,3,3,3,2,5,2,2,2,10,20,20,5};
+    private static final int [] AMOUNT_OF_ROOMCARDS = {30,4,3,3,3,2,5,2,2,2,1,2,2,5};
     private static final int [] AMOUNT_OF_CHESTCARDS = {8,5,3};
     private static final int [] AMOUNT_OF_TREASURECARDS = {0,15,2,3,3,2,2,1,1,1};
     private static final int [] AMOUNT_OF_ROOMSEARCHCARDS = {6,5,3,2};

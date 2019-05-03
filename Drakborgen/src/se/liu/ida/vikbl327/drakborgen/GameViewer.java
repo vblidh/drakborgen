@@ -452,11 +452,13 @@ public class GameViewer
 	if (monsterFlees) {
 	    JOptionPane.showMessageDialog(frame.getParent(), "Monstret flyr");
 	} else {
+	    String startingMsg = "Du och monstret väljer en varsin attack. Reglerna som gäller är:\n " +
+				 "A slår B, B slår C, C slår A";
+	    String addedMsg = "";
 	    JOptionPane.showMessageDialog(frame.getParent(), "Monstret möter din attack!");
 	    while (monsterHealth > 0) {
 		int choice = JOptionPane.showOptionDialog(
-			frame.getParent(),"Du och monstret väljer en varsin attack. Reglerna som gäller är:\n " +
-					  "A slår B, B slår C, C slår A","Strid med " + card + "!",
+			frame.getParent(),addedMsg+startingMsg, "Strid med " + card + "!",
 			JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
 			null, currentHero.getAttackOptions(), null
 		);
@@ -465,16 +467,16 @@ public class GameViewer
 
 		if (heroAttack.beats(monsterAttack)) {
 		    int damageDone = choice == currentHero.getDoubleDamageAttackIndex() ? 2 : 1;
-		    addTextToEventLog("Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
-				      "Din attack träffade och du gjorde " + damageDone + " skada\n");
+		    addedMsg = "Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
+				      "Din attack träffade och du gjorde " + damageDone + " skada\n";
 		    monsterHealth -= damageDone;
 		} else if (monsterAttack.beats(heroAttack)) {
-		    addTextToEventLog("Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
-				      "Monstrets attack träffade och gjorde " + 1 + " skada\n");
+		    addedMsg = "Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
+				      "Monstrets attack träffade och gjorde " + 1 + " skada\n";
 		    currentHero.setCurrentHealth(currentHero.getCurrentHealth() - 1);
 		} else {
-		    addTextToEventLog("Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
-				      "Båda attacker träffade och gjorde " + 1 + " skada till vardera\n");
+		    addedMsg = "Du valde attack " + heroAttack + " och monstret valde attack " + monsterAttack + "\n" +
+				      "Båda attacker träffade och gjorde " + 1 + " skada till vardera\n";
 		    currentHero.setCurrentHealth(currentHero.getCurrentHealth() - 1);
 		    monsterHealth--;
 		}
@@ -828,6 +830,7 @@ public class GameViewer
 					   "du blir överfallen", "Överrumpling", JOptionPane.INFORMATION_MESSAGE
 		    );
 		    ambush(diceOptions, rnd, RoomCard.SKELETONAMBUSH);
+		    battleWithMonster(RoomCard.SKELETONAMBUSH, rnd);
 		    advanceTurn();
 		    break;
 		default:

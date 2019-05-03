@@ -67,11 +67,7 @@ public class Player
     }
 
     public void removeTreasuresFromChamber(){
-        for (ImmutablePair<TreasureCard, Integer> p : treasures){
-            if (!p.left.equals(TreasureCard.JEWELRY)){
-                treasures.remove(p);
-	    }
-	}
+    	treasures.removeIf(n -> (n.getLeft().equals(TreasureCard.JEWELRY)));
     }
 
     public void leaveGame(){
