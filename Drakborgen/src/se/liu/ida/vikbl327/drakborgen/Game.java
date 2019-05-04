@@ -2,6 +2,7 @@ package se.liu.ida.vikbl327.drakborgen;
 
 import se.liu.ida.vikbl327.drakborgen.heroes.Aelfric;
 import se.liu.ida.vikbl327.drakborgen.heroes.Bardor;
+import se.liu.ida.vikbl327.drakborgen.heroes.Character;
 import se.liu.ida.vikbl327.drakborgen.heroes.Rohan;
 import se.liu.ida.vikbl327.drakborgen.heroes.Sigier;
 

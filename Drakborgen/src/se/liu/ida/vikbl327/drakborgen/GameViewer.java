@@ -5,6 +5,7 @@ import se.liu.ida.vikbl327.drakborgen.cards.ChestCard;
 import se.liu.ida.vikbl327.drakborgen.cards.RoomCard;
 import se.liu.ida.vikbl327.drakborgen.cards.RoomSearchCard;
 import se.liu.ida.vikbl327.drakborgen.cards.TreasureCard;
+import se.liu.ida.vikbl327.drakborgen.heroes.Character;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

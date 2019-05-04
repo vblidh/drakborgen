@@ -1,12 +1,11 @@
 package se.liu.ida.vikbl327.drakborgen.heroes;
-import se.liu.ida.vikbl327.drakborgen.Character;
 
 import javax.swing.*;
 
 /**
  * One of the playable heroes of the game.
  */
-public class Aelfric implements Character
+public class Aelfric extends GenericHero
 {
     private static final String NAME = "Aelfric Brunkåpa";
     private static final Object[] ATTACK_OPTIONS = {"Attack A", "Attack B ", "Attack C \n  (dubbel skada)"};
@@ -32,15 +31,14 @@ public class Aelfric implements Character
     private final ImageIcon heroIcon;
 
     public Aelfric() {
+        //super();
         this.currentHealth = HEALTH_POINTS;
-        this.xPos = 0;
-        this.yPos = 0;
 
 	this.heroIcon = new ImageIcon(ClassLoader.getSystemResource("Aelfric.png"));
 
     }
 
-    public String getName() {
+    @Override public String getName() {
 	return NAME;
     }
 

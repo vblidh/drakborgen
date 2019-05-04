@@ -1,6 +1,8 @@
 package se.liu.ida.vikbl327.drakborgen;
 
 import org.apache.commons.lang3.ArrayUtils;
+import se.liu.ida.vikbl327.drakborgen.heroes.Character;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;

@@ -2,6 +2,7 @@ package se.liu.ida.vikbl327.drakborgen;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import se.liu.ida.vikbl327.drakborgen.cards.TreasureCard;
+import se.liu.ida.vikbl327.drakborgen.heroes.Character;
 
 
 import java.util.ArrayList;
