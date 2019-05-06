@@ -3,48 +3,47 @@ package se.liu.ida.vikbl327.drakborgen.heroes;
 import javax.swing.*;
 
 /**
- * Interface for all the different heroes that can be chosen to play as at the start of a game. In future implementations heroes
- * will have specific abilities and therefore specific methods, hence the interface.
+ * Interface for all the different heroes that can be chosen to play as at the start of a game.
  */
 
 public interface Character
 {
-    public String getName();
+    String getName();
 
-    public Object[] getAttackOptions();
+    Object[] getAttackOptions();
 
-    public int getDoubleDamageAttackIndex();
+    int getDoubleDamageAttackIndex();
 
-    public int getHealthPoints();
+    int getMaxHealthFactor();
 
-    public int getStrengthFactor();
+    int getStrengthFactor();
 
-    public int getAgilityFactor();
+    int getAgilityFactor();
 
-    public int getArmorFactor();
+    int getArmorFactor();
 
-    public int getLuckFactor();
+    int getLuckFactor();
 
-    public int getCurrentHealth();
+    int getCurrentHealth();
 
-    public void setCurrentHealth(final int currentHealth);
+    void setCurrentHealth(final int currentHealth);
 
-    public int getxPos();
+    int getxPos();
 
-    public int getyPos();
+    int getyPos();
 
-    public ImageIcon getHeroIcon();
+    ImageIcon getHeroIcon();
 
-    public double getScaleX();
+    double getScaleX();
 
-    public double getScaleY();
+    double getScaleY();
 
-    public int getCalculatedxPos();
+    int getCalculatedxPos();
 
-    public int getCalculatedyPos();
+    int getCalculatedyPos();
 
-    public void setxPos(final int xPos);
+    void setxPos(final int xPos);
 
-    public void setyPos(final int yPos);
+    void setyPos(final int yPos);
 
 }

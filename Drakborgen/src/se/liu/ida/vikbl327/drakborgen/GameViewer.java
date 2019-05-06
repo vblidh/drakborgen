@@ -223,7 +223,7 @@ public class GameViewer
 		    "Styrka (SF)  : " + currentHero.getStrengthFactor() + "\n" + "Vighet (VF)  : " +
 		    currentHero.getAgilityFactor() + "\n" + "Rustning (RF): " + currentHero.getArmorFactor() + "\n" +
 		    "Tur (TF):    : " + currentHero.getLuckFactor() + "\n" + "Kroppspoäng  : " +
-		    currentHero.getCurrentHealth() + "/" + currentHero.getHealthPoints() + "\n" + "Värde av skatter: " +
+		    currentHero.getCurrentHealth() + "/" + currentHero.getMaxHealthFactor() + "\n" + "Värde av skatter: " +
 		    players.get(currentPlayerIndex).getTreasureValue());
 	}
     }
