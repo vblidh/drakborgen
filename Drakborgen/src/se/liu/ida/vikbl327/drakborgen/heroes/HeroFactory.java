@@ -57,9 +57,8 @@ public class HeroFactory
     private static final int ROHAN_Y_POS_MULTIPLIER = 680;
 
 
-    public Character createHero(String hero) throws IllegalArgumentException {
+    public Character createHero(String hero) throws ClassNotFoundException{
         switch (hero){
-
 	    case "Sigier":
 	        return new Sigier("Sigier Skarpyxe", SIGIER_HEALTH_POINTS, SIGIER_STRENGTH_FACTOR, SIGIER_AGILITY_FACTOR,
 				  SIGIER_ARMOR_FACTOR, SIGIER_LUCK_FACTOR, 1, SIGIER_SCALE_X, SIGIER_SCALE_Y,
@@ -79,7 +78,7 @@ public class HeroFactory
 				 ROHAN_ARMOR_FACTOR, ROHAN_LUCK_FACTOR,0, ROHAN_SCALE_X, ROHAN_SCALE_Y,
 				 ROHAN_X_POS_FACTOR, ROHAN_Y_POS_FACTOR, ROHAN_X_POS_MULTIPLIER, ROHAN_Y_POS_MULTIPLIER);
 	    default:
-	        throw new IllegalArgumentException("Ej en giltig hjälte");
+	        throw new ClassNotFoundException("Ej en giltig hjälte");
 	}
     }
 }

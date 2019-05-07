@@ -34,4 +34,5 @@ public enum Attack
     };
 
     public abstract boolean beats(Attack other);
+
 }

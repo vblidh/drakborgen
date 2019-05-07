@@ -1,6 +1,7 @@
 package se.liu.ida.vikbl327.drakborgen;
 
 import org.apache.commons.lang3.ArrayUtils;
+import se.liu.ida.vikbl327.drakborgen.bricks.SquareType;
 import se.liu.ida.vikbl327.drakborgen.heroes.Character;
 
 import javax.swing.*;
@@ -18,6 +19,7 @@ public class GameComponent extends JComponent implements BoardListener
     private Board gameBoard;
     private EnumMap<SquareType, Color> squareColors;
     private int sunTimer;
+    private List<Player> players;
 
     private static final int STARTTIMER = 25;
     private static final int BRICK_SIZE = 60;
@@ -32,9 +34,11 @@ public class GameComponent extends JComponent implements BoardListener
     private static final List<Color> COLORS = List.of(Color.BLACK, Color.lightGray, Color.darkGray, Color.GREEN, Color.ORANGE,
 						      Color.BLUE);
 
-    public GameComponent(final Board gameBoard) {
+    public GameComponent(final Board gameBoard, final List<Player> players) {
+
 	this.gameBoard = gameBoard;
 	this.squareColors = generateDefaultColors();
+	this.players = players;
 	this.sunTimer = STARTTIMER;
     }
 
@@ -76,7 +80,8 @@ public class GameComponent extends JComponent implements BoardListener
 	g2d.drawString("Rundor kvar tills alla kvarvarande hjältar dör: " + sunTimer, BOARD_WIDTH/4, SUNTIMERTEXTPLACEMENT);
 
 	AffineTransform saveAt = g2d.getTransform();
-	for (Character hero : gameBoard.getCharacters()) {
+	for (Player player : players) {
+	    Character hero = player.getHero();
 	    ImageIcon icon = hero.getHeroIcon();
 
 	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

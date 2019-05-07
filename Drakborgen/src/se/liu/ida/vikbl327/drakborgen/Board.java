@@ -1,6 +1,9 @@
 package se.liu.ida.vikbl327.drakborgen;
 
-import se.liu.ida.vikbl327.drakborgen.heroes.Character;
+import se.liu.ida.vikbl327.drakborgen.bricks.Brick;
+import se.liu.ida.vikbl327.drakborgen.bricks.BrickMaker;
+import se.liu.ida.vikbl327.drakborgen.bricks.BrickType;
+import se.liu.ida.vikbl327.drakborgen.bricks.SquareType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,6 @@ public class Board
 {
     private Brick[][] bricks;
     private List<BoardListener> listeners;
-    private List<Character> characters;
 
     private int height;
     private int width;
@@ -25,7 +27,6 @@ public class Board
 	this.width = width;
 	this.maker = new BrickMaker();
 	this.listeners = new ArrayList<>();
-	this.characters = new ArrayList<>();
 	this.bricks = new Brick[height][width];
 
 	clearBoard();
@@ -39,10 +40,6 @@ public class Board
 
     public int getWidth() {
 	return width;
-    }
-
-    public List<Character> getCharacters() {
-	return characters;
     }
 
     public Brick getBrick(int row, int col) {
@@ -64,11 +61,6 @@ public class Board
 
     public void addBoardListener(BoardListener b){
         listeners.add(b);
-    }
-
-    public void addCharacter(Character hero){
-        characters.add(hero);
-        notifyListeners();
     }
 
     public void clearBoard(){

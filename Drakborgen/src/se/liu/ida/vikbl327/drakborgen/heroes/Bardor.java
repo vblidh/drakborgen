@@ -24,6 +24,4 @@ public class Bardor extends GenericHero
 	return heroIcon;
     }
 
-
-
 }

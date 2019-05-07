@@ -78,7 +78,6 @@ public final class Game
 
 	for (int i = 0; i < players.size(); i++) {
 	    Character h = players.get(i).getHero();
-	    board.addCharacter(h);
 	    h.setyPos(startingPoints.get(i)[0]);
 	    h.setxPos(startingPoints.get(i)[1]);
 	}

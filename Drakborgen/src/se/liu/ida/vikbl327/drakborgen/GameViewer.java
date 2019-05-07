@@ -1,6 +1,11 @@
 package se.liu.ida.vikbl327.drakborgen;
 
 import org.apache.commons.lang3.ArrayUtils;
+import se.liu.ida.vikbl327.drakborgen.bricks.Brick;
+import se.liu.ida.vikbl327.drakborgen.bricks.BrickGenerator;
+import se.liu.ida.vikbl327.drakborgen.bricks.BrickType;
+import se.liu.ida.vikbl327.drakborgen.bricks.SquareType;
+import se.liu.ida.vikbl327.drakborgen.cards.CardGenerator;
 import se.liu.ida.vikbl327.drakborgen.cards.ChestCard;
 import se.liu.ida.vikbl327.drakborgen.cards.RoomCard;
 import se.liu.ida.vikbl327.drakborgen.cards.RoomSearchCard;
@@ -67,7 +72,7 @@ public class GameViewer
 	this.gameBoard = gameBoard;
 	this.players = players;
 	this.frame = new JFrame("Drakborgen");
-	this.comp = new GameComponent(gameBoard);
+	this.comp = new GameComponent(gameBoard, players);
 	gameBoard.addBoardListener(comp);
 	this.bgenerator = new BrickGenerator();
 	this.cgenerator = new CardGenerator();
@@ -595,7 +600,6 @@ public class GameViewer
 		}
 	    }
 	}
-	advanceTurn();
     }
 
     private List<Point> checkOutsideTreasureRoom() {
@@ -727,7 +731,6 @@ public class GameViewer
 		allowedActions.remove(Action.DRAWROOMSEARCHCARD);
 		allowedActions.add(Action.DRAWROOMCARD);
 	    }
-
 	    brickButton.setText("Dra rumsbricka");
 	    movedWithinTreasureRoom = false;
 	}
@@ -744,7 +747,6 @@ public class GameViewer
 	    allowedActions.remove(Action.DRAWROOMCARD);
 
 	    handleRoomCard(card);
-
 	    advanceTurn();
 	}
     }
@@ -762,6 +764,7 @@ public class GameViewer
 		    currentPlayer.addTreasure(card, cardValue);
 		}
 		checkDragon();
+		advanceTurn();
 	    } else {
 		addTextToEventLog("Du kan bara dra skattkammarkort när du befinner dig i skattkammaren");
 	    }
@@ -826,7 +829,9 @@ public class GameViewer
 					   "du blir överfallen", "Överrumpling", JOptionPane.INFORMATION_MESSAGE
 		    );
 		    ambush(diceOptions, RoomCard.SKELETONAMBUSH);
-		    battleWithMonster(RoomCard.SKELETONAMBUSH);
+		    if (currentPlayer.checkHealth()) {
+		        battleWithMonster(RoomCard.SKELETONAMBUSH);
+		    }
 		    advanceTurn();
 		    break;
 		default:

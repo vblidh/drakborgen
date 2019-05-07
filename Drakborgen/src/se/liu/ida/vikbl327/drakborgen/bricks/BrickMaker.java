@@ -1,4 +1,4 @@
-package se.liu.ida.vikbl327.drakborgen;
+package se.liu.ida.vikbl327.drakborgen.bricks;
 
 /**
  *

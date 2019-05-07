@@ -1,4 +1,4 @@
-package se.liu.ida.vikbl327.drakborgen;
+package se.liu.ida.vikbl327.drakborgen.bricks;
 
 /**
  * Brick class representing the bricks shown on the board. The board consists of 13*10 Bricks, and each Brick contains 6x6
@@ -79,5 +79,4 @@ public class Brick
 	newBrick.timesRotated = this.timesRotated;
 	return newBrick;
     }
-
 }
