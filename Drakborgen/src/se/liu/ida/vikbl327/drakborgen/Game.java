@@ -69,9 +69,9 @@ public final class Game
 		} catch (ClassNotFoundException e) {
 		    System.out.println(e.getMessage());
 		}
-
-		heroes.remove(choice);
 	    }
+	    heroes.remove(choice);
+	    validInput = false;
 	}
 
 	Collections.shuffle(players);

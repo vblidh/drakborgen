@@ -224,7 +224,7 @@ public class GameViewer
     private void updateHeroInfo() {
 	if (currentHero != null) {
 	    currentHeroInfo.setText(
-		    "Spelare: " + players.get(currentPlayerIndex).getName() + "\n" + "Hjälte: " + currentHero.getName() + "\n" +
+		    "Spelare: " + currentPlayer.getName() + "\n" + "Hjälte: " + currentHero.getName() + "\n" +
 		    "Styrka (SF)  : " + currentHero.getStrengthFactor() + "\n" + "Vighet (VF)  : " +
 		    currentHero.getAgilityFactor() + "\n" + "Rustning (RF): " + currentHero.getArmorFactor() + "\n" +
 		    "Tur (TF):    : " + currentHero.getLuckFactor() + "\n" + "Kroppspoäng  : " +

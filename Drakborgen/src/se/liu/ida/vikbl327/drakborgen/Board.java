@@ -28,9 +28,7 @@ public class Board
 	this.maker = new BrickMaker();
 	this.listeners = new ArrayList<>();
 	this.bricks = new Brick[height][width];
-
 	clearBoard();
-
     }
 
 
