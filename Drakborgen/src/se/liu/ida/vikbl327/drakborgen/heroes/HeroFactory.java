@@ -57,24 +57,24 @@ public class HeroFactory
     private static final int ROHAN_Y_POS_MULTIPLIER = 680;
 
 
-    public Character createHero(String hero) throws ClassNotFoundException{
-        switch (hero){
-	    case "Sigier":
-	        return new Sigier("Sigier Skarpyxe", SIGIER_HEALTH_POINTS, SIGIER_STRENGTH_FACTOR, SIGIER_AGILITY_FACTOR,
+    public Character createHero(String heroName) throws ClassNotFoundException{
+        switch (heroName){
+	    case "Sigier Skarpyxe":
+	        return new Sigier(heroName, SIGIER_HEALTH_POINTS, SIGIER_STRENGTH_FACTOR, SIGIER_AGILITY_FACTOR,
 				  SIGIER_ARMOR_FACTOR, SIGIER_LUCK_FACTOR, 1, SIGIER_SCALE_X, SIGIER_SCALE_Y,
 				  SIGIER_X_POS_FACTOR, SIGIER_Y_POS_FACTOR, SIGIER_X_POS_MULTIPLIER, SIGIER_Y_POS_MULTIPLIER);
 
-	    case "Aelfric":
-	        return new Aelfric("Aelfric Brunkåpa",AELFRIC_HEALTH_POINTS,AELFRIC_STRENGTH_FACTOR,AELFRIC_AGILITY_FACTOR,
+	    case "Aelfric Brunkåpa":
+	        return new Aelfric(heroName,AELFRIC_HEALTH_POINTS,AELFRIC_STRENGTH_FACTOR,AELFRIC_AGILITY_FACTOR,
 				   AELFRIC_ARMOR_FACTOR, AELFRIC_LUCK_FACTOR, 2, AELFRIC_SCALE_X,
 				   AELFRIC_SCALE_Y, AELFRIC_X_POS_FACTOR, AELFRIC_Y_POS_FACTOR, AELFRIC_X_POS_MULTIPLIER,
 				   AELFRIC_Y_POS_MULTIPLIER);
-	    case "Bardor":
-	        return new Bardor("Bardor Bågman", BARDOR_HEALTH_POINTS, BARDOR_STRENGTH_FACTOR, BARDOR_AGILITY_FACTOR,
+	    case "Bardor Bågman":
+	        return new Bardor(heroName, BARDOR_HEALTH_POINTS, BARDOR_STRENGTH_FACTOR, BARDOR_AGILITY_FACTOR,
 				  BARDOR_ARMOR_FACTOR, BARDOR_LUCK_FACTOR, 1, BARDOR_SCALE_X, BARDOR_SCALE_Y,
 				  BARDOR_X_POS_FACTOR, BARDOR_Y_POS_FACTOR, BARDOR_X_POS_MULTIPLIER, BARDOR_Y_POS_MULTIPLIER);
-	    case "Rohan":
-	        return new Rohan("Riddar Rohan", ROHAN_HEALTH_POINTS, ROHAN_STRENGTH_FACTOR, ROHAN_AGILITY_FACTOR,
+	    case "Riddar Rohan":
+	        return new Rohan(heroName, ROHAN_HEALTH_POINTS, ROHAN_STRENGTH_FACTOR, ROHAN_AGILITY_FACTOR,
 				 ROHAN_ARMOR_FACTOR, ROHAN_LUCK_FACTOR,0, ROHAN_SCALE_X, ROHAN_SCALE_Y,
 				 ROHAN_X_POS_FACTOR, ROHAN_Y_POS_FACTOR, ROHAN_X_POS_MULTIPLIER, ROHAN_Y_POS_MULTIPLIER);
 	    default:

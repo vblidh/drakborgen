@@ -49,29 +49,29 @@ public final class Game
 	    }
 	}
 	List<Player> players = new ArrayList<>();
+	validInput = false;
+
 
 	for (int i = 0; i < numberOfPlayers; i++) {
-	    input = JOptionPane.showInputDialog("Spelare "+(i+1)+", skriv ditt namn");
+	    input = JOptionPane.showInputDialog("Spelare " + (i + 1) + ", skriv ditt namn");
 
 	    int choice = JOptionPane.showOptionDialog(
 	    	frame.getParent(), input + ", välj vilken hjälte du vill spela", "Välj hjälte",
 		JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, heroes.toArray(), null);
 
-	    switch(heroes.get(choice).toString()){
-		case "Sigier Skarpyxe":
-		    players.add(new Player(input,factory.createHero("Sigier")));
-		    break;
-		case "Aelfric Brunkåpa":
-		    players.add(new Player(input, factory.createHero("Aelfric")));
-		    break;
-		case "Riddar Rohan":
-		    players.add(new Player(input, factory.createHero("Rohan")));
-		    break;
-		default:
-		    players.add(new Player(input, factory.createHero("Bardor")));
-	    }
 
-	    heroes.remove(choice);
+	    while (!validInput) {
+		try {
+		    Character hero = factory.createHero(heroes.get(choice).toString());
+		    players.add(new Player(input, hero));
+		    validInput = true;
+
+		} catch (ClassNotFoundException e) {
+		    System.out.println(e.getMessage());
+		}
+
+		heroes.remove(choice);
+	    }
 	}
 
 	Collections.shuffle(players);

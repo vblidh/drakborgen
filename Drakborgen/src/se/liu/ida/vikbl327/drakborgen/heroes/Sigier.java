@@ -30,5 +30,4 @@ public class Sigier extends GenericHero
 
 
 
-
 }
