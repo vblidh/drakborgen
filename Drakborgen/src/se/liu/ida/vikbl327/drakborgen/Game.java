@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
- * The runnable class of the project. Creates a board, new players based on user inputs and creates the graphical window that
- * the game is played on.
+ * The runnable class of the project. Creates a board, new players based on user inputs and then creates a GameViewer object
+ * that the game is played on.
  */
 public final class Game
 {
@@ -27,51 +29,53 @@ public final class Game
 
     public static void main(String[] args) {
 	Board board = new Board(BOARDHEIGHT, BOARDWIDTH);
+	Logger logger = Logger.getLogger("User input logger");
 	List<int[]> startingPoints = new ArrayList<>(STARTINGPOINTS);
 	List<Object> heroes = new ArrayList<>(Arrays.asList(HEROES));
 	Collections.shuffle(startingPoints);
 	HeroFactory factory = new HeroFactory();
 	JFrame frame = new JFrame();
+	logger.info(logger.getName());
+	JPanel panel = new JPanel();
+	JLabel label = new JLabel("Välkommen till Drakborgen, välj hur många som ska spela: (1-4 spelare möjliga)");
+	JTextField field = new JTextField(5);
+	panel.add(label);
+	panel.add(field);
 
-	String input = JOptionPane.showInputDialog(frame.getParent(),
-		"Välkommen till Drakborgen, välj hur många som ska spela: (1-4 spelare möjliga)");
+
 	boolean validInput = false;
 	int numberOfPlayers = 0;
+	Object [] options = {"Ok"};
 
 	while(!validInput) {
+	    String input = "";
+	    int choice = JOptionPane.showOptionDialog(
+	    	frame.getParent(),panel, "Välj antal spelare",
+		JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+	    if (choice == 0) input = field.getText();
+
 	    try {
 		numberOfPlayers = Integer.parseInt(input);
-		if (!(numberOfPlayers < 1 || numberOfPlayers > 4)) validInput = true;
-		else input = JOptionPane.showInputDialog(frame.getParent(),"Vänligen skriv en siffra mellan 1 och 4");
-
+		if ((numberOfPlayers > 1 && numberOfPlayers < 5)) validInput = true;
 	    } catch (NumberFormatException e) {
-		input = JOptionPane.showInputDialog(frame.getParent(),"Vänligen skriv en siffra mellan 1 och 4");
+	        logger.log(Level.SEVERE, "Error found: ", e);
+	        label.setText("Vänligen skriv en siffra mellan 1 och 4");
 	    }
 	}
 	List<Player> players = new ArrayList<>();
-	validInput = false;
 
 
 	for (int i = 0; i < numberOfPlayers; i++) {
-	    input = JOptionPane.showInputDialog("Spelare " + (i + 1) + ", skriv ditt namn");
+	    String input = JOptionPane.showInputDialog("Spelare " + (i + 1) + ", skriv ditt namn");
 
 	    int choice = JOptionPane.showOptionDialog(
 	    	frame.getParent(), input + ", välj vilken hjälte du vill spela", "Välj hjälte",
 		JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, heroes.toArray(), null);
 
 
-	    while (!validInput) {
-		try {
-		    Character hero = factory.createHero(heroes.get(choice).toString());
-		    players.add(new Player(input, hero));
-		    validInput = true;
-
-		} catch (ClassNotFoundException e) {
-		    System.out.println(e.getMessage());
-		}
-	    }
+	    Character hero = factory.createHero(heroes.get(choice).toString());
+	    players.add(new Player(input, hero));
 	    heroes.remove(choice);
-	    validInput = false;
 	}
 
 	Collections.shuffle(players);
@@ -82,6 +86,7 @@ public final class Game
 	    h.setxPos(startingPoints.get(i)[1]);
 	}
 
+	frame.dispose();
 	GameViewer viewer = new GameViewer(board, players);
     }
 }

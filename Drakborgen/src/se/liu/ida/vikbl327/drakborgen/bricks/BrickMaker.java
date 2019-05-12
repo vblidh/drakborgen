@@ -1,7 +1,8 @@
 package se.liu.ida.vikbl327.drakborgen.bricks;
 
 /**
- *
+ * This class handles the creation of bricks. The method createBrick(BrickType type) creates a brick with the appearance
+ * correlating with the given type.
  */
 
 public class BrickMaker

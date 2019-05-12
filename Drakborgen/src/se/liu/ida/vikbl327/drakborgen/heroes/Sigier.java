@@ -8,9 +8,7 @@ import javax.swing.*;
 
 public class Sigier extends GenericHero
 {
-
     private final ImageIcon heroIcon;
-
 
     public Sigier(final String name, final int maxHealthFactor, final int strengthFactor, final int agilityFactor,
 		  final int armorFactor, final int luckFactor, final int doubleDamageAttackIndex, final double scaleX,

@@ -11,25 +11,25 @@ public enum Attack
     /**
      * Attack A, beats attack B.
      */
-    A {
+    A_ATTACK {
 	@Override public boolean beats(Attack other) {
-	    return other == B;
+	    return other == B_ATTACK;
 	}
     },
     /**
      * Attack B, beats attack C.
      */
-    B {
+    B_ATTACK {
 	@Override public boolean beats(Attack other) {
-		    return other == C;
+		    return other == C_ATTACK;
 		}
     },
     /**
      * Attack C, beats attack A.
      */
-    C {
+    C_ATTACK {
 	@Override public boolean beats(Attack other) {
-		    return other == A;
+		    return other == A_ATTACK;
 		}
     };
 

@@ -84,11 +84,11 @@ public class GameComponent extends JComponent implements BoardListener
 	    Character hero = player.getHero();
 	    ImageIcon icon = hero.getHeroIcon();
 
-	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	    final AffineTransform at = AffineTransform.getScaleInstance(hero.getScaleX(), hero.getScaleY());
-	    g2d.setTransform(at);
-	    icon.paintIcon(this, g, hero.getCalculatedxPos(),hero.getCalculatedyPos());
-	    g2d.setTransform(saveAt);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		final AffineTransform at = AffineTransform.getScaleInstance(hero.getScaleX(), hero.getScaleY());
+		g2d.setTransform(at);
+		icon.paintIcon(this, g, hero.getCalculatedxPos(), hero.getCalculatedyPos());
+		g2d.setTransform(saveAt);
 	}
     }
 

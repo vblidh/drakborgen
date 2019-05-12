@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -41,6 +43,7 @@ public class GameViewer
     private static final int T12 = 12;
     private static final SquareType[] ACCEPTED_SQUARES = { SquareType.PATH, SquareType.UNDISCOVERED, SquareType.TREASURE };
     private static final BrickType[] EXCEPTIONBRICKS = { BrickType.TREASURE, BrickType.START };
+    private static final Logger LOGGER = Logger.getLogger("User Interface Logger");
 
     private Board gameBoard;
     private GameComponent comp;
@@ -210,7 +213,8 @@ public class GameViewer
 		eventlog.replaceRange("", 0, end);
 	    }
 	} catch (BadLocationException e) {
-	    System.out.println(e.getMessage());
+	    LOGGER.log(Level.SEVERE, "Error found", e);
+	    return;
 	}
 	eventlog.append(text);
     }
@@ -255,16 +259,16 @@ public class GameViewer
 	allowedActions.add(Action.MOVEHERO);
 	allowedActions.add(Action.DRAWROOMSEARCHCARD);
 
-	int alivePlayers = 0;
+	boolean alivePlayers = false;
 	boolean clearTreasureRoom = true;
 	for (Player player : players) {
-	    else if (player.isAlive()) alivePlayers++;
+	    if (player.isAlive() && !alivePlayers) alivePlayers = true;
 	    if (gameBoard.getBrick(player.getHero().getyPos(), player.getHero().getxPos()).getType().equals(BrickType.TREASURE))
 	        clearTreasureRoom = false;
 
 	}
 	if (clearTreasureRoom) sleepingDragonFactor = 8;
-	if (alivePlayers == 0) {
+	if (!alivePlayers) {
 	    eventlog.setText("Alla spelare antingen döda eller lämnat");
 	    allowedActions.clear();
 	    decideWinner();
