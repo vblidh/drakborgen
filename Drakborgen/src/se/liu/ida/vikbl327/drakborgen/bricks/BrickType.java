@@ -36,7 +36,7 @@ public enum BrickType
      */
     AHEAD {
 	@Override public String toString() {
-	    return "Rum";
+	    return "framåt";
 	}
     },
     /**
@@ -44,7 +44,7 @@ public enum BrickType
      */
     LEFT {
 	@Override public String toString() {
-		    return "Rum";
+		    return "till vänster";
 	}
     },
     /**
@@ -52,7 +52,7 @@ public enum BrickType
      */
     RIGHT {
 	@Override public String toString() {
-		    return "Rum";
+		    return "till höger";
 	}
     },
     /**
@@ -60,7 +60,7 @@ public enum BrickType
      */
     AHEADLEFT {
 	@Override public String toString() {
-		    return "Rum";
+		    return "framåt och till vänster";
 		}
     },
     /**
@@ -68,7 +68,7 @@ public enum BrickType
      */
     AHEADRIGHT {
 	@Override public String toString() {
-		    return "Rum";
+		    return "framåt och till höger";
 		}
     },
     /**
@@ -76,7 +76,7 @@ public enum BrickType
      */
     LEFTRIGHT {
 	@Override public String toString() {
-		    return "Rum";
+		    return "till vänster och till höger";
 		}
     },
     /**
@@ -84,7 +84,7 @@ public enum BrickType
      */
     FOURWAY {
 	@Override public String toString() {
-	    return "Rum";
+	    return "åt alla håll";
 	}
     }
 }

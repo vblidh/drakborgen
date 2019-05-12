@@ -15,7 +15,7 @@ public class HeroFactory
     private static final int SIGIER_X_POS_FACTOR = 70;
     private static final int SIGIER_Y_POS_FACTOR = 100;
     private static final int SIGIER_X_POS_MULTIPLIER = 460;
-    private static final int SIGIER_Y_POS_MULTIPLIER = 590;
+    private static final int SIGIER_Y_POS_MULTIPLIER = 600;
 
 
     private static final int AELFRIC_HEALTH_POINTS = 15;
@@ -25,10 +25,10 @@ public class HeroFactory
     private static final int AELFRIC_LUCK_FACTOR = 8;
     private static final double AELFRIC_SCALE_X = 0.11;
     private static final double AELFRIC_SCALE_Y = 0.08;
-    private static final int AELFRIC_X_POS_FACTOR = 70;
+    private static final int AELFRIC_X_POS_FACTOR = 80;
     private static final int AELFRIC_Y_POS_FACTOR = 140;
     private static final int AELFRIC_X_POS_MULTIPLIER = 550;
-    private static final int AELFRIC_Y_POS_MULTIPLIER = 730;
+    private static final int AELFRIC_Y_POS_MULTIPLIER = 750;
 
 
     private static final int BARDOR_HEALTH_POINTS = 15;
@@ -39,9 +39,9 @@ public class HeroFactory
     private static final double BARDOR_SCALE_X = 0.10;
     private static final double BARDOR_SCALE_Y = 0.08;
     private static final int BARDOR_X_POS_FACTOR = 120;
-    private static final int BARDOR_Y_POS_FACTOR = 200;
+    private static final int BARDOR_Y_POS_FACTOR = 180;
     private static final int BARDOR_X_POS_MULTIPLIER = 600;
-    private static final int BARDOR_Y_POS_MULTIPLIER = 740;
+    private static final int BARDOR_Y_POS_MULTIPLIER = 750;
 
 
     private static final int ROHAN_HEALTH_POINTS = 17;
@@ -52,7 +52,7 @@ public class HeroFactory
     private static final double ROHAN_SCALE_X = 0.13;
     private static final double ROHAN_SCALE_Y = 0.088;
     private static final int ROHAN_X_POS_FACTOR = 90;
-    private static final int ROHAN_Y_POS_FACTOR = 150;
+    private static final int ROHAN_Y_POS_FACTOR = 140;
     private static final int ROHAN_X_POS_MULTIPLIER = 460;
     private static final int ROHAN_Y_POS_MULTIPLIER = 680;
 

@@ -104,7 +104,7 @@ public class GameViewer
 
 
 	JPanel panel = new JPanel();
-	Color backGround = new Color(92, 62, 10); //Magic number to generate desired background color.
+	Color backGround = new Color(92, 62, 10); //Magic numbers to generate desired background color.
 	panel.setBackground(backGround);
 	panel.add(currentHeroInfo);
 	panel.add(brickButton);
@@ -217,7 +217,7 @@ public class GameViewer
 
     private BrickType drawBrick() {
 	BrickType type = bgenerator.generateBrick();
-	addTextToEventLog(type + " bricka placerad \n");
+	addTextToEventLog("Den placerade brickan har öppning(ar) " + type + "\n");
 	return type;
     }
 
@@ -258,7 +258,6 @@ public class GameViewer
 	int alivePlayers = 0;
 	boolean clearTreasureRoom = true;
 	for (Player player : players) {
-	    if (comp.getSunTimer() == 0 && currentPlayerIndex == players.size()-1) player.kill();
 	    else if (player.isAlive()) alivePlayers++;
 	    if (gameBoard.getBrick(player.getHero().getyPos(), player.getHero().getxPos()).getType().equals(BrickType.TREASURE))
 	        clearTreasureRoom = false;
@@ -274,6 +273,7 @@ public class GameViewer
 	do {
 	    if (currentPlayerIndex == players.size()-1) {
 		comp.decrementSunTimer();
+		if (comp.getSunTimer() == 0) decideWinner();
 		currentPlayerIndex = 0;
 	    } else currentPlayerIndex++;
 	} while (!(players.get(currentPlayerIndex).isAlive()));
@@ -295,9 +295,6 @@ public class GameViewer
     private void openChest(Random rnd, Object[] diceOption) {
 	ChestCard card = cgenerator.drawChestCard();
 	switch (card) {
-	    case EMPTY:
-		JOptionPane.showMessageDialog(frame.getParent(), "Kistan är tom");
-		break;
 	    case JEWELRY:
 		int jewelryValue = TreasureCard.JEWELRY.getValue(rnd);
 		JOptionPane.showMessageDialog(frame.getParent(),
@@ -326,6 +323,9 @@ public class GameViewer
 			);
 		    }
 		}
+		break;
+	    default:
+		JOptionPane.showMessageDialog(frame.getParent(), "Kistan är tom");
 	}
     }
 
@@ -496,6 +496,7 @@ public class GameViewer
 		    );
 		    return;
 		}
+		updateHeroInfo();
 	    }
 	    JOptionPane.showInternalMessageDialog(frame.getParent(), "Monstret dog och du pustar ut. Din runda är över",
 						  "Strid över", JOptionPane.INFORMATION_MESSAGE);
@@ -566,8 +567,8 @@ public class GameViewer
 
     private void checkDragon() {
 	int r = rnd.nextInt(sleepingDragonFactor);
+	addTextToEventLog("Chans för draken att vakna är 1 på  " + sleepingDragonFactor);
 	sleepingDragonFactor--;
-	System.out.println("Dragon: " + sleepingDragonFactor);
 
 	if (r > 0) {
 	    JOptionPane.showInternalMessageDialog(
@@ -649,8 +650,8 @@ public class GameViewer
 		    gameBoard.placeBrick(row + 1, col, type, Direction.DOWN);
 		}
 		currentHero.setyPos(row + 1);
-
 	}
+	comp.repaint();
     }
 
     private void decideWinner() {
@@ -810,7 +811,9 @@ public class GameViewer
 		    );
 		    allowedActions.remove(Action.MOVEHERO);
 		    allowedActions.remove(Action.DRAWROOMSEARCHCARD);
-		    allowedActions.add(Action.DRAWROOMCARD);
+		    if (gameBoard.getBrick(currentHero.getyPos(), currentHero.getxPos()).getType().equals(BrickType.TREASURE))
+		    	allowedActions.add(Action.DRAWTREASURECARD);
+		    else allowedActions.add(Action.DRAWROOMCARD);
 
 		    break;
 		case JEWELRY:
