@@ -68,7 +68,6 @@ public class GameComponent extends JComponent implements BoardListener
 	    }
 	}
 
-
 	g2d.setColor(Color.BLACK);
 	g2d.fillRect(0, gameBoard.getHeight()*BRICK_SIZE, gameBoard.getWidth()*BRICK_SIZE, MENU_SIZE);
 
@@ -92,12 +91,9 @@ public class GameComponent extends JComponent implements BoardListener
 	}
     }
 
-
     private boolean isInTreasureRoom(int row, int col){
 	return (row == TREASURE_ROW && ArrayUtils.contains(TREASURE_COLS, col));
     }
-
-
 
     public EnumMap<SquareType, Color> generateDefaultColors(){
             EnumMap<SquareType, Color> map = new EnumMap<>(SquareType.class);
