@@ -76,7 +76,6 @@ public class GameViewer
 	this.players = players;
 	this.frame = new JFrame("Drakborgen");
 	this.comp = new GameComponent(gameBoard, players);
-	gameBoard.addBoardListener(comp);
 	this.bgenerator = new BrickGenerator();
 	this.cgenerator = new CardGenerator();
 	this.highLightedBrick = null;
@@ -88,14 +87,10 @@ public class GameViewer
 	this.sleepingDragonFactor = 8;
 	this.rnd = new Random();
 
-	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	double width = screenSize.getWidth();
-	double height = screenSize.getHeight();
-	System.out.println("Width: " + width + " Height: " + height);
+	gameBoard.addBoardListener(comp);
 
 	final JMenuBar menuBar = new JMenuBar();
 	final JMenu file = new JMenu("File");
-
 	JMenuItem quit = new JMenuItem("Quit");
 	file.add(quit);
 	quit.addActionListener(new QuitAction());
